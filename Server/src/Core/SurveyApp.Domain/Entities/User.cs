@@ -16,8 +16,8 @@ namespace SurveyApp.Domain.Entities
         public required string UserName { get; set; }
         public required string PasswordHash { get; set; }
         public required string PasswordSalt { get; set; }
+        public required string RefreshToken { get; set; }
 
         public ICollection<Survey> Surveys { get; set; } = new List<Survey>();
-        public string RefreshToken { get; set; }
     }
 }

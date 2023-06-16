@@ -14,5 +14,7 @@ namespace SurveyApp.Domain.Entities
 
         public required int QuestionId { get; set; }
         public required Question Question { get; set; }
+
+        public ICollection<Answer> Answers { get; set; } = new List<Answer>();
     }
 }

@@ -6,11 +6,6 @@ using SurveyApp.Application.Interfaces.Services;
 using SurveyApp.Persistence.EntityFramework.Contexts;
 using SurveyApp.Persistence.EntityFramework.Repositories;
 using SurveyApp.Persistence.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SurveyApp.Persistence
 {
