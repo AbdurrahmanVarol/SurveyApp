@@ -7,14 +7,11 @@ using System.Threading.Tasks;
 
 namespace SurveyApp.Domain.Entities
 {
-    public class Answer : BaseEntity
+    public class QuestionType : BaseEntity
     {
         public required int Id { get; set; }
+        public required string Name { get; set; }
 
-        public required int OptionId { get; set; }
-        public required Option Option { get; set; }
-
-        public int? UserId { get; set; }
-        public User? User { get; set; }
+        public ICollection<Question> Questions { get; set;}
     }
 }

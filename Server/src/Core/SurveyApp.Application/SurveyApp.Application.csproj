@@ -7,9 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\" />
-    <Folder Include="Interfaces\Services\" />
     <Folder Include="Mapping\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SurveyApp.Domain\SurveyApp.Domain.csproj" />
   </ItemGroup>
 
 </Project>
