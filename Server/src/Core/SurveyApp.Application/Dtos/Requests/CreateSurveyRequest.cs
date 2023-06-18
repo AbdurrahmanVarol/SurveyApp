@@ -10,6 +10,6 @@ namespace SurveyApp.Application.Dtos.Requests
     {
         public string Title { get; set; }
         public Guid CreatedById { get; set; }
-        public List<CreateQuestionRequest> Question { get; set; }
+        public List<CreateQuestionRequest> Questions { get; set; }
     }
 }

@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace SurveyApp.Application.Interfaces.Services
 {
-    public interface IQuestionService
+    public interface IAnswerService
     {
-        Task<int> AddAsync(CreateQuestionRequest request);
-        Task<IEnumerable<QuestionDisplayResponse>> GetQuestionsBySurveyId(int surveyId);
+        Task<IEnumerable<AnswerResultResponse>> GetAnswerResultsBySurveyIdAsync(int surveyId);
+        Task<AnswerResultResponse> GetAnswerResultByQuestionIdAsync(int questionId);
+        Task<int> AddAsync(CreateAnswerRequest request);
     }
 }

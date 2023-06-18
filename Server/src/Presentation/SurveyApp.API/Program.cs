@@ -1,6 +1,6 @@
 using SurveyApp.Persistence;
 using SurveyApp.Infrastructure;
-
+using SurveyApp.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddInfrastructureServices();
 

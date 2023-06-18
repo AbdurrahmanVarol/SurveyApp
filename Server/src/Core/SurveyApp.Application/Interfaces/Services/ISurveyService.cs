@@ -11,7 +11,7 @@ namespace SurveyApp.Application.Interfaces.Services
     public interface ISurveyService
     {
         Task<SurveyResponse> GetSurveyByIdAsync(int id);
-        
+        Task<IEnumerable<SurveyDisplayResponse>> GetSurveysAsync();        
         Task<int> AddAsync(CreateSurveyRequest request);
 
     }

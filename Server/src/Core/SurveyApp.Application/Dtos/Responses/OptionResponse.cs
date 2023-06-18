@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace SurveyApp.Application.Dtos.Responses
 {
-    public class SurveyResponse
+    public class OptionResponse
     {
         public int Id { get; set; }
-        public  string Title { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public Guid CreatedById { get; set; }
-        public IEnumerable<QuestionDisplayResponse> Questions { get; set; }
+        public string Text { get; set; }
+
     }
 }

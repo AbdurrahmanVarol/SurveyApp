@@ -76,8 +76,8 @@ namespace SurveyApp.Infrastructure.Services
         }
         public async Task<LoginResponse> RefreshTokenAsync(string refreshToken, Guid userId)
         {
-
-            var user = await _userService.GetUserByRefreshTokenAndUserIdAsync(refreshToken, userId);
+            //TODO: userId
+            var user = await _userService.GetUserByRefreshTokenAndUserIdAsync(refreshToken);
 
             if (user is null)
             {

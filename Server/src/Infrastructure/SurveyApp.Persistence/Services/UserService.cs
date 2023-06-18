@@ -1,4 +1,5 @@
-﻿using SurveyApp.Application.Interfaces.Services;
+﻿using SurveyApp.Application.Interfaces.Repositories;
+using SurveyApp.Application.Interfaces.Services;
 using SurveyApp.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,19 +11,28 @@ namespace SurveyApp.Persistence.Services
 {
     public class UserService : IUserService
     {
-        public Task AddAsync(User user)
+        private readonly IUserRepository _userRepository;
+
+        public UserService(IUserRepository userRepository)
         {
-            throw new NotImplementedException();
+            _userRepository = userRepository;
         }
 
-        public Task<User> GetUserByRefreshTokenAndUserIdAsync(string refreshToken, Guid userId)
+        public async Task AddAsync(User user)
         {
-            throw new NotImplementedException();
+            await _userRepository.AddAsync(user);           
         }
 
-        public Task<User> GetUserByUserNameAsync(string userName)
+        public async Task<User> GetUserByRefreshTokenAndUserIdAsync(string refreshToken)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetAsync(p => p.RefreshToken.Equals(refreshToken));
+            return user;
+        }
+
+        public async Task<User> GetUserByUserNameAsync(string userName)
+        {
+            var user = await _userRepository.GetAsync(p => p.UserName.Equals(userName));
+            return user;
         }
     }
 }

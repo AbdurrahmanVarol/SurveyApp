@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SurveyApp.Application.Interfaces.Services
+namespace SurveyApp.Application.Dtos.Responses
 {
-    internal interface IAnswerServiec
+    public class AnswerResponse
     {
     }
 }

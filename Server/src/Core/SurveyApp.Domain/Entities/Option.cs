@@ -9,11 +9,11 @@ namespace SurveyApp.Domain.Entities
 {
     public class Option : BaseEntity
     {
-        public required int Id { get; set; }
+        public int Id { get; set; }
         public required string Text { get; set; }
 
-        public required int QuestionId { get; set; }
-        public required Question Question { get; set; }
+        public int QuestionId { get; set; }
+        public Question Question { get; set; }
 
         public ICollection<Answer> Answers { get; set; } = new List<Answer>();
     }

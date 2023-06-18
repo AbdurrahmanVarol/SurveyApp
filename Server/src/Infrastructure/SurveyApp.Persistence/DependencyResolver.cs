@@ -27,6 +27,7 @@ namespace SurveyApp.Persistence
             services.AddScoped<IAnswerRepository, EfAnswerRepository>();
 
             services.AddScoped<IUserService,UserService>();
+            services.AddScoped<ISurveyService,SurveyService>();
         }
     }
 }

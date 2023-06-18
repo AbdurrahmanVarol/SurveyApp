@@ -11,6 +11,6 @@ namespace SurveyApp.Application.Interfaces.Services
     {
         Task<User> GetUserByUserNameAsync(string userName);
         Task AddAsync(User user);
-        Task<User> GetUserByRefreshTokenAndUserIdAsync(string refreshToken, Guid userId);
+        Task<User> GetUserByRefreshTokenAndUserIdAsync(string refreshToken);
     }
 }
