@@ -12,7 +12,7 @@ using SurveyApp.Persistence.EntityFramework.Contexts;
 namespace SurveyApp.Persistence.Migrations
 {
     [DbContext(typeof(SurveyAppContext))]
-    [Migration("20230616181700_Init")]
+    [Migration("20230618181702_Init")]
     partial class Init
     {
         /// <inheritdoc />

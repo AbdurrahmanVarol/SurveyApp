@@ -12,12 +12,12 @@ namespace SurveyApp.Domain.Entities
         public int Id { get; set; }
         public required string Text { get; set; }
 
-        public int SurveyId { get; set; }
-        public Survey Survey { get; set; }
+        public required int SurveyId { get; set; }
+        public Survey? Survey { get; set; }
 
         public required int QuestionTypeId { get; set; }
-        public  QuestionType QuestionType { get; set; }
+        public  QuestionType? QuestionType { get; set; }
 
-        public ICollection<Option> Options { get; set; } = new List<Option>();
+        public ICollection<Option>? Options { get; set; } = new List<Option>();
     }
 }

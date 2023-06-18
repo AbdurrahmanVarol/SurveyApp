@@ -24,8 +24,7 @@ namespace SurveyApp.Application.Mapping.AutoMapper
             CreateMap<Answer, AnswerResponse>();
             CreateMap<CreateAnswerRequest, Answer>();
 
-            CreateMap<CreateQuestionRequest,Question>()
-                .ForMember(d=>d.Options, s=>s.MapFrom(x=>x.Options.Select(p=>new Option { Text = p})));
+            CreateMap<CreateQuestionRequest, Question>();
 
         }
     }

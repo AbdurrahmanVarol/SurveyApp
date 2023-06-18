@@ -20,6 +20,8 @@ namespace SurveyApp.Persistence
                 options.UseSqlServer(connectionString);
             });
 
+            services.AddTransient<DbContext, SurveyAppContext>();
+
             services.AddScoped<IUserRepository, EfUserRepository>();
             services.AddScoped<ISurveyRepository, EfSurveyRepository>();
             services.AddScoped<IQuestionRepository, EfQuestionRepository>();

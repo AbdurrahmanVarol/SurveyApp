@@ -9,9 +9,9 @@ namespace SurveyApp.Domain.Entities
 {
     public class QuestionType : BaseEntity
     {
-        public required int Id { get; set; }
+        public int Id { get; set; }
         public required string Name { get; set; }
 
-        public ICollection<Question> Questions { get; set;}
+        public ICollection<Question>? Questions { get; set;}
     }
 }

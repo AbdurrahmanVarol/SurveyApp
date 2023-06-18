@@ -14,8 +14,8 @@ namespace SurveyApp.Domain.Entities
         public required DateTime CreatedAt { get; set; }
 
         public required Guid CreatedById { get; set; }
-        public User CreatedBy { get; set; }
+        public User? CreatedBy { get; set; }
 
-        public ICollection<Question> Questions { get; set; } = new List<Question>();
+        public ICollection<Question>? Questions { get; set; } = new List<Question>();
     }
 }

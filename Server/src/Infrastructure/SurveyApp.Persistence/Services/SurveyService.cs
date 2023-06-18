@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using SurveyApp.Application.Dtos.Requests;
 using SurveyApp.Application.Dtos.Responses;
+using SurveyApp.Application.Extensions.ValidationExtensions;
 using SurveyApp.Application.Interfaces.Repositories;
 using SurveyApp.Application.Interfaces.Services;
 using SurveyApp.Domain.Entities;
@@ -17,17 +19,28 @@ namespace SurveyApp.Persistence.Services
         private readonly ISurveyRepository _surveyRepository;
         private readonly IQuestionRepository _questionRepository;
         private readonly IMapper _mapper;
+        private readonly IValidator<Survey> _validator;
 
-        public SurveyService(ISurveyRepository surveyRepository, IMapper mapper, IQuestionRepository questionRepository)
+        public SurveyService(ISurveyRepository surveyRepository, IMapper mapper, IQuestionRepository questionRepository, IValidator<Survey> validator)
         {
             _surveyRepository = surveyRepository;
             _mapper = mapper;
             _questionRepository = questionRepository;
+            _validator = validator;
         }
 
         public async Task<int> AddAsync(CreateSurveyRequest request)
         {
-          var survey = _mapper.Map<Survey>(request);
+            //var survey = _mapper.Map<Survey>(request);
+            var survey = new Survey
+            {
+                CreatedAt = DateTime.Now,
+                CreatedById = request.CreatedById,
+                Title = request.Title,
+            };
+
+            _validator.ValidateAndThrowArgumentException(survey);
+
             await _surveyRepository.AddAsync(survey);
             return survey.Id;
         }
