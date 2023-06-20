@@ -15,16 +15,19 @@ namespace SurveyApp.Application.Mapping.AutoMapper
         public DefaultMapper()
         {
             CreateMap<Survey, SurveyResponse>();
+            CreateMap<CreateSurveyRequest, Survey>();
+
 
             CreateMap<Option,OptionResponse>();
 
             CreateMap<Question, QuestionResponse>();    
             CreateMap<Question, QuestionDisplayResponse>();    
+            CreateMap<CreateQuestionRequest, Question>()
+                .ForMember(d=>d.Options,s=>s.MapFrom(m=>m.Options.Select(o=>new Option { Text = o}).ToList()));
             
             CreateMap<Answer, AnswerResponse>();
             CreateMap<CreateAnswerRequest, Answer>();
 
-            CreateMap<CreateQuestionRequest, Question>();
 
         }
     }

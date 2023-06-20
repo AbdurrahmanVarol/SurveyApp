@@ -1,0 +1,141 @@
+﻿@{
+    ViewData["Title"] = "CreateSurvey";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class=""></div>
+
+
+<div class="row">
+    <div class="mb-3">
+        <input id="question" class="form-control" placeholder="Sorunuzu giriniz..." />
+    </div>
+    <div class="mb-3 form-floating">
+        <select class="form-select" id="questionType">
+            <option value="0" selected hidden>Seçiniz</option>
+            <option value="1">Radio</option>
+            <option value="2">Check</option>
+            <option value="3">Range</option>
+        </select>
+        <label for="questionType">Soru Türü</label>
+    </div>
+    <div class="input-group input-group-lg mb-3">
+        <input id="optionName" class="form-control" placeholder="Seçenek ekleyiniz..." />
+        <button type="button" class="btn btn-outline-success" onclick="addOption()">Seçenek Ekle</button>
+    </div>
+    <ul id="options">
+    </ul>
+    <button type="button" class="btn btn-success" onclick="addQuestion()">Yeni Soru Ekle</button>
+</div>
+<div id="questions" class="">
+</div>
+
+@section Scripts{
+    <script>
+        const getListItemAsString = (value) => {
+            return `
+                                           <li class="fs-5 d-flex align-items-center mb-2">
+                                                       <button class="btn badge bg-danger text-light float-start me-2" onclick="removeOption(event)">&#x2715</button>
+                                               <span>${value}</span>
+                                           </li>
+                                           `
+        }
+        const addOption = () => {
+            let optionName = document.getElementById('optionName')
+            let options = document.getElementById('options')
+
+            options.innerHTML += getListItemAsString(optionName.value)
+            optionName.value = ''
+        }
+        const removeOption = (event) => {
+            event.cancelBubble = true
+            let li = event.target.parentNode
+            let ul = event.target.parentNode.parentNode
+            ul.removeChild(li)
+        }
+
+        const addQuestion = () =>{
+            let text = document.getElementById('question')
+            let questionType = document.getElementById('questionType')
+            let html = getQuestionAsString(text,questionType)
+            let questionsElement = document.getElementById('questions')
+
+            questionsElement.innerHTML += getQuestionAsString(text.value,questionType.value)
+
+            document.getElementById('options').innerHTML = ''
+            text.value = ''
+            questionType.value = 0
+
+        }
+        const getQuestionAsString = (text,questionType) => {
+            let questions = [...document.querySelectorAll('#questions .row')]
+            
+            console.log(text)
+            console.log(questionType)
+            console.log(questions)
+            console.log(questions.length)
+            let options = getOptionsAsString(questionType, questions.length)
+            console.log(options)
+            let html = `
+                <div class="row">
+                    <h5>Soru-${questions.length +1}) ${text}</h5>
+                            <div class="d-flex flex-column">
+                                        ${options}
+                            </div>
+                </div>            
+            `    
+            return html
+        }
+        const getOptionsAsString = (questionType,questionNumber) =>{
+            let options = [...document.querySelectorAll('#options li span')].map(p=>p.innerText)
+            console.log(options)
+            switch(questionType){
+                case '1':
+                    return getOptionsAsRadio(options, questionNumber)
+                case '2':
+                    return getOptionsAsCheck(options, questionNumber)
+                case '3':
+                    return getOptionsAsRange(questionNumber)
+            }
+        }
+        const getOptionsAsRadio = (options, questionNumber) => {           
+
+
+            let html = `<div>`
+
+            for (let i = 0; i < options.length; i++) {
+                html += `<input type="radio" class="btn-check" name="option${questionNumber+1}" id="option${questionNumber+1}-${i+1}" autocomplete="off" />
+                                 <label class="btn btn-outline-success" for="option${questionNumber + 1}-${i + 1}">${options[i]}</label>
+                                 `
+            }
+            html += `</div>`
+            return html
+        }
+        const getOptionsAsCheck = (options, questionNumber) => {
+
+            let html = `<div>`
+
+            for (let i = 0; i < options.length; i++) {
+                html += `<input type="checkbox" class="btn-check" id="option${questionNumber + 1}-${i + 1}" autocomplete="off"/>
+                        <label class="btn btn-outline-success" for="option${questionNumber + 1}-${i + 1}">${options[i]}</label>
+                                         `
+            }
+            html += `</div>`
+            return html
+        }
+        const getOptionsAsRange = (questionNumber) => {
+            let options = [...Array(10).keys()]
+            console.log(options)
+            let html = `<div class="btn-group" role="group">`
+            for (let option of options) {
+                html += `
+                                <input type="radio" class="btn-check" name="option${questionNumber + 1}" id="option${questionNumber + 1}-${option}" autocomplete="off" />
+                                <label class="btn btn-outline-success" for="option${questionNumber + 1}-${option}">${option}</label>
+                `
+            }
+            html += `</div>`
+            return html
+        }
+    </script>
+}
+

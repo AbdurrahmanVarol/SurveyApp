@@ -13,5 +13,6 @@ namespace SurveyApp.Application.Interfaces.Services
         Task<IEnumerable<AnswerResultResponse>> GetAnswerResultsBySurveyIdAsync(int surveyId);
         Task<AnswerResultResponse> GetAnswerResultByQuestionIdAsync(int questionId);
         Task<int> AddAsync(CreateAnswerRequest request);
+        Task AddRangeAsync(IEnumerable<CreateAnswerRequest> request);
     }
 }

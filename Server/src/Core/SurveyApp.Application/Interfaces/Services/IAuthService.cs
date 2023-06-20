@@ -12,7 +12,7 @@ namespace SurveyApp.Application.Interfaces.Services
     public interface IAuthService
     {
         Task<LoginResponse> LoginAsync(LoginRequest request);
-        Task<LoginResponse> RefreshTokenAsync(string refreshToken, Guid userId);
+        Task<LoginResponse> RefreshTokenAsync(RefreshTokenRequest refreshTokenRequest);
         Task RegisterAsync(RegisterRequest request);
         void CreatePasswordHash(string password, out string passwordHash, out string passwordSalt);
         bool VerifyPasswordHash(string password, string passwordHash, string passwordSalt);

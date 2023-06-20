@@ -28,8 +28,11 @@ namespace SurveyApp.Persistence
             services.AddScoped<IOptionRepository, EfOptionRepository>();
             services.AddScoped<IAnswerRepository, EfAnswerRepository>();
 
-            services.AddScoped<IUserService,UserService>();
-            services.AddScoped<ISurveyService,SurveyService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ISurveyService, SurveyService>();
+            services.AddScoped<IQuestionService, QuestionService>();
+            services.AddScoped<IAnswerService, AnswerService>();
+            services.AddScoped<IOptionService, OptionService>();
         }
     }
 }

@@ -28,7 +28,7 @@ namespace SurveyApp.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSurvey([FromBody] CreateSurveyRequest request)
+        public async Task<IActionResult> Post([FromBody] CreateSurveyRequest request)
         {
             int id = await _surveyService.AddAsync(request);
             return Created($"/surveys/{id}",id);

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using SurveyApp.Application.Dtos.Requests;
 using SurveyApp.Application.Dtos.Responses;
+using SurveyApp.Application.Extensions.ValidationExtensions;
 using SurveyApp.Application.Interfaces.Repositories;
 using SurveyApp.Application.Interfaces.Services;
 using SurveyApp.Domain.Entities;
@@ -16,19 +18,32 @@ namespace SurveyApp.Persistence.Services
     {
         private readonly IAnswerRepository _answerRepository;
         private readonly IMapper _mapper;
+        private readonly IValidator<Answer> _validator;
 
-        public AnswerService(IAnswerRepository answerRepository, IMapper mapper)
+        public AnswerService(IAnswerRepository answerRepository, IMapper mapper, IValidator<Answer> validator)
         {
             _answerRepository = answerRepository;
             _mapper = mapper;
+            _validator = validator;
         }
 
         public async Task<int> AddAsync(CreateAnswerRequest request)
         {
             //TODO:Validasyon ekle
             var answer = _mapper.Map<Answer>(request);
+
+            _validator.ValidateAndThrowArgumentException(answer);
+
             await _answerRepository.AddAsync(answer);
             return answer.Id;
+        }
+
+        public async Task AddRangeAsync(IEnumerable<CreateAnswerRequest> request)
+        {
+            foreach (var answer in request)
+            {
+                await AddAsync(answer);
+            }
         }
 
         public async Task<AnswerResultResponse> GetAnswerResultByQuestionIdAsync(int questionId)

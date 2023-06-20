@@ -11,6 +11,8 @@ namespace SurveyApp.Application.Interfaces.Services
     public interface IQuestionService
     {
         Task<int> AddAsync(CreateQuestionRequest request);
-        Task<IEnumerable<QuestionDisplayResponse>> GetQuestionsBySurveyId(int surveyId);
+        Task<int> AddRangeAsync(IEnumerable<CreateQuestionRequest> request, int id);
+        Task<QuestionDisplayResponse> GetQuestionByIdAsync(int id);
+        Task<IEnumerable<QuestionDisplayResponse>> GetQuestionsBySurveyIdAsync(int surveyId);
     }
 }

@@ -1,4 +1,6 @@
-﻿using SurveyApp.Application.Interfaces.Repositories;
+﻿using FluentValidation;
+using SurveyApp.Application.Extensions.ValidationExtensions;
+using SurveyApp.Application.Interfaces.Repositories;
 using SurveyApp.Application.Interfaces.Services;
 using SurveyApp.Domain.Entities;
 using System;
@@ -12,14 +14,18 @@ namespace SurveyApp.Persistence.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IValidator<User> _validator;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IValidator<User> validator)
         {
             _userRepository = userRepository;
+            _validator = validator;
         }
 
         public async Task AddAsync(User user)
         {
+            _validator.ValidateAndThrowArgumentException(user);
+
             await _userRepository.AddAsync(user);           
         }
 

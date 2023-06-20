@@ -22,4 +22,8 @@
     <ProjectReference Include="..\..\Core\SurveyApp.Domain\SurveyApp.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="EntityFramework\Seeding\" />
+  </ItemGroup>
+
 </Project>

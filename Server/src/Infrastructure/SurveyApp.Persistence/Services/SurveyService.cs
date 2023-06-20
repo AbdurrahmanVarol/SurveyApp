@@ -17,31 +17,34 @@ namespace SurveyApp.Persistence.Services
     public class SurveyService : ISurveyService
     {
         private readonly ISurveyRepository _surveyRepository;
-        private readonly IQuestionRepository _questionRepository;
+        private readonly IQuestionService _questionService;
         private readonly IMapper _mapper;
         private readonly IValidator<Survey> _validator;
 
-        public SurveyService(ISurveyRepository surveyRepository, IMapper mapper, IQuestionRepository questionRepository, IValidator<Survey> validator)
+        public SurveyService(ISurveyRepository surveyRepository, IQuestionService questionService, IMapper mapper, IValidator<Survey> validator)
         {
             _surveyRepository = surveyRepository;
+            _questionService = questionService;
             _mapper = mapper;
-            _questionRepository = questionRepository;
             _validator = validator;
         }
 
         public async Task<int> AddAsync(CreateSurveyRequest request)
         {
-            //var survey = _mapper.Map<Survey>(request);
-            var survey = new Survey
-            {
-                CreatedAt = DateTime.Now,
-                CreatedById = request.CreatedById,
-                Title = request.Title,
-            };
+            var survey = _mapper.Map<Survey>(request);
+            //var survey = new Survey
+            //{
+            //    CreatedAt = DateTime.Now,
+            //    CreatedById = request.CreatedById,
+            //    Title = request.Title,
+            //};
 
             _validator.ValidateAndThrowArgumentException(survey);
 
             await _surveyRepository.AddAsync(survey);
+
+            await _questionService.AddRangeAsync(request.Questions,survey.Id);
+
             return survey.Id;
         }
 

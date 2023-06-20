@@ -15,8 +15,8 @@ namespace SurveyApp.Application.Validators.FluentValidation
         public AnswerValidator(DbContext dbContext)
         {
             _dbContext = dbContext;
-            RuleFor(p => p.OptionId).Must(IsOptionExist).WithMessage("Option tanımlı değil");
 
+            RuleFor(p => p.OptionId).Must(IsOptionExist).WithMessage("Option tanımlı değil");
         }
         private bool IsOptionExist(int optionId) 
         {
