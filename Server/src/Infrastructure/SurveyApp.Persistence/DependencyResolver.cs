@@ -20,19 +20,21 @@ namespace SurveyApp.Persistence
                 options.UseSqlServer(connectionString);
             });
 
-            services.AddTransient<DbContext, SurveyAppContext>();
-
             services.AddScoped<IUserRepository, EfUserRepository>();
             services.AddScoped<ISurveyRepository, EfSurveyRepository>();
             services.AddScoped<IQuestionRepository, EfQuestionRepository>();
             services.AddScoped<IOptionRepository, EfOptionRepository>();
             services.AddScoped<IAnswerRepository, EfAnswerRepository>();
+            services.AddScoped<ITextAnswerRepository, EfTextAnswerRepository>();
+            services.AddScoped<IQuestionTypeRepository, EfQuestionTypeRepository>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISurveyService, SurveyService>();
             services.AddScoped<IQuestionService, QuestionService>();
             services.AddScoped<IAnswerService, AnswerService>();
+            services.AddScoped<ITextAnswerService, TextAnswerService>();
             services.AddScoped<IOptionService, OptionService>();
+            services.AddScoped<IQuestionTypeService,QuestionTypeService>();
         }
     }
 }

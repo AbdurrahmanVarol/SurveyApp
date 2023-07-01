@@ -11,6 +11,5 @@ namespace SurveyApp.Domain.ComplexTypes
     {
         public int AnswerCount { get; set; }
         public Option Option { get; set; }
-        public Question Question { get; set; }
     }
 }

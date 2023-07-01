@@ -40,29 +40,32 @@ namespace SurveyApp.Persistence.Services
             return question.Id;
         }
 
-        public async Task<int> AddRangeAsync(IEnumerable<CreateQuestionRequest> request, int surveyId)
+        public async Task<int> AddRangeAsync(IEnumerable<CreateQuestionRequest> request, Guid surveyId)
         {
             foreach (var question in request)
             {
                 question.SurveyId = surveyId;
                 var questionId = await AddAsync(question);
 
-                await _optionService.AddRangeAsync(question.Options, questionId);
+                if (question.QuestionTypeId == 1 || question.QuestionTypeId == 2)
+                {
+                    await _optionService.AddRangeAsync(question.Options, questionId);
+                }
             }
             return 0;
         }
 
-        public async Task<QuestionDisplayResponse> GetQuestionByIdAsync(int id)
+        public async Task<QuestionResponse> GetQuestionByIdAsync(int id)
         {
             var question = await _questionRepository.GetAsync(p => p.Id == id);
-            return _mapper.Map<QuestionDisplayResponse>(question);
+            return _mapper.Map<QuestionResponse>(question);
         }
 
-        public async Task<IEnumerable<QuestionDisplayResponse>> GetQuestionsBySurveyIdAsync(int surveyId)
+        public async Task<IEnumerable<QuestionResponse>> GetQuestionsBySurveyIdAsync(Guid surveyId)
         {
             //TODO:Mapping düzgün çalışıyor mu?
             var questions = await _questionRepository.GetAllAsync(p => p.SurveyId == surveyId);
-            return _mapper.Map<IEnumerable<QuestionDisplayResponse>>(questions);
+            return _mapper.Map<IEnumerable<QuestionResponse>>(questions);
         }
     }
 }

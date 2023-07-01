@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewData["Title"] = "SurveyResult";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>SurveyResult</h1>
+<div id="chartdiv" style="width:100%;min-height:1100px; padding:10px;"></div>
+
+
+@section Scripts{
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+    <script>
+      //  let root = document.getElementById('chart')
+     setTimeout(()=>{
+            var root = am5.Root.new("chartdiv");
+            var chart = root.container.children.push(
+                am5percent.PieChart.new(root, {
+                    layout: root.verticalHorizontal
+                })
+            );
+
+            // Define data
+            var data = [{
+                country: "France",
+                sales: 100000
+            }, {
+                country: "Spain",
+                sales: 160000
+            }, {
+                country: "United Kingdom",
+                sales: 80000
+            }];
+
+            // Create series
+            var series = chart.series.push(
+                am5percent.PieSeries.new(root, {
+                    name: "Series",
+                    valueField: "sales",
+                    categoryField: "country"
+                })
+            );
+            series.data.setAll(data);
+
+            // Add legend
+            var legend = chart.children.push(am5.Legend.new(root, {
+                centerX: am5.percent(50),
+                x: am5.percent(50),
+                layout: am5.GridLayout.new(root, {
+                    maxColumns: 3,
+                    fixedWidthGrid: true
+                })
+            }));
+
+            legend.data.setAll(series.dataItems);
+     },200)
+    </script>
+}

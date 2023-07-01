@@ -10,8 +10,8 @@ namespace SurveyApp.Application.Interfaces.Services
 {
     public interface IAnswerService
     {
-        Task<IEnumerable<AnswerResultResponse>> GetAnswerResultsBySurveyIdAsync(int surveyId);
-        Task<AnswerResultResponse> GetAnswerResultByQuestionIdAsync(int questionId);
+        Task<SurveyResultResponse> GetAnswerResultsBySurveyIdAsync(Guid surveyId);
+        Task<IEnumerable<AnswerResultResponse>> GetAnswerResultByQuestionIdAsync(int questionId);
         Task<int> AddAsync(CreateAnswerRequest request);
         Task AddRangeAsync(IEnumerable<CreateAnswerRequest> request);
     }

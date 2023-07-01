@@ -9,13 +9,13 @@ namespace SurveyApp.Domain.Entities
 {
     public class Survey : BaseEntity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public required string Title { get; set; }
         public required DateTime CreatedAt { get; set; }
 
         public required Guid CreatedById { get; set; }
         public User? CreatedBy { get; set; }
 
-        public ICollection<Question>? Questions { get; set; } = new List<Question>();
+        public ICollection<Question> Questions { get; set; } = new List<Question>();
     }
 }

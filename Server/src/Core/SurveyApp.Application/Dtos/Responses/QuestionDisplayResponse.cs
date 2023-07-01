@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Primitives;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +10,7 @@ namespace SurveyApp.Application.Dtos.Responses
     {
         public int Id { get; set; }
         public string Text { get; set; }
-        public QuestionTypeResponse QuestionType { get; set; }
+        public int QuestionTypeId { get; set; }
         public IEnumerable<OptionResponse> Options { get; set; }
     }
 }

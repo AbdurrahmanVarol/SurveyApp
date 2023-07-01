@@ -9,7 +9,8 @@ namespace SurveyApp.Application.Dtos.Requests
 {
     public class CreateAnswerRequest
     {
+        public int QuestionId { get; set; }
+        public int QuestionTypeId { get; set; }
         public int OptionId { get; set; }
-        public int? UserId { get; set; }
     }
 }

@@ -1,0 +1,16 @@
+﻿@model QuestionTypeViewModel
+
+<div class="mb-3 form-floating">
+    <select class="form-select" id="questionType">
+        @if(Model.SelectedType == null)
+        {
+            <option value="0" selected hidden>Seçiniz</option>
+        }
+        
+        @foreach(var questionType in Model.QuestionTypes)
+        {
+            <option value=@(questionType.Id) selected=@(Model.SelectedType != null && Model.SelectedType == questionType.Id)>@questionType.Name</option>
+        }
+    </select>
+    <label for="questionType">Soru Türü</label>
+</div>

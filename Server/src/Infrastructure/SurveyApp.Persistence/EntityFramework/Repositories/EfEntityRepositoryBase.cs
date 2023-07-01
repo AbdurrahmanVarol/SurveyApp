@@ -35,7 +35,7 @@ namespace SurveyApp.Persistence.EntityFramework.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> filter = null)
+        public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> filter)
         {
             return await (filter == null ? _context.Set<TEntity>().ToListAsync() : _context.Set<TEntity>().Where(filter).ToListAsync());
         }
@@ -50,6 +50,11 @@ namespace SurveyApp.Persistence.EntityFramework.Repositories
             var updatedEntity = _context.Entry(entity);
             updatedEntity.State = EntityState.Modified;
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> IsExist(object key)
+        {
+            return (await _context.Set<TEntity>().FindAsync(key)) != null;
         }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SurveyApp.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,8 +46,7 @@ namespace SurveyApp.Persistence.Migrations
                 name: "Surveys",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
@@ -70,7 +69,7 @@ namespace SurveyApp.Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SurveyId = table.Column<int>(type: "int", nullable: false),
+                    SurveyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     QuestionTypeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -111,14 +110,39 @@ namespace SurveyApp.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TextAnswers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    QuestionId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TextAnswers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TextAnswers_Questions_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "Questions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TextAnswers_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Answers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OptionId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true),
-                    UserId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -130,8 +154,8 @@ namespace SurveyApp.Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Answers_Users_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Answers_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id");
                 });
@@ -142,9 +166,9 @@ namespace SurveyApp.Persistence.Migrations
                 column: "OptionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Answers_UserId1",
+                name: "IX_Answers_UserId",
                 table: "Answers",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Options_QuestionId",
@@ -165,6 +189,16 @@ namespace SurveyApp.Persistence.Migrations
                 name: "IX_Surveys_CreatedById",
                 table: "Surveys",
                 column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TextAnswers_QuestionId",
+                table: "TextAnswers",
+                column: "QuestionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TextAnswers_UserId",
+                table: "TextAnswers",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -172,6 +206,9 @@ namespace SurveyApp.Persistence.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Answers");
+
+            migrationBuilder.DropTable(
+                name: "TextAnswers");
 
             migrationBuilder.DropTable(
                 name: "Options");

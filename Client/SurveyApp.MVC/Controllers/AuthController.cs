@@ -3,49 +3,62 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using SurveyApp.MVC.Models;
+using Refit;
+using System;
+using SurveyApp.MVC.Refit;
 
 namespace SurveyApp.MVC.Controllers
 {
     public class AuthController : Controller
     {
-        [HttpGet]
-        public IActionResult Login()
+        private readonly IAuthApi _surveyAppApi;
+
+        public AuthController(IAuthApi surveyAppApi)
         {
+            _surveyAppApi = surveyAppApi;
+        }
+
+        [HttpGet]
+        public IActionResult Login(string? returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         [HttpPost]
-        public IActionResult Login(LoginModel loginModel)
+        public async Task<IActionResult> Login(LoginModel loginModel, string? returnUrl)
         {
-            //try
-            //{
-            //    var user = _authService.LoginAsync(loginRequest).GetAwaiter().GetResult();
+            try
+            {
+                var result = await _surveyAppApi.LoginAsync(loginModel);
 
-            //    var claims = new List<Claim>
-            //    {
-            //        new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
-            //        new Claim("Name",user.FirstName),
-            //        new Claim("FullName",user.FullName)
-            //    };
+                var claims = new List<Claim>
+                {
+                    new Claim("token" ,result.Token),
+                    new Claim("refreshToken",result.RefreshToken),
+                    new Claim(ClaimTypes.Name, result.UserName)
+                };
 
-            //    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            //    var authenticationProperties = new AuthenticationProperties
-            //    {
-            //        AllowRefresh = true,
-            //        IsPersistent = loginModel.IsKeepLoggedIn,
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authenticationProperties = new AuthenticationProperties
+                {
+                    AllowRefresh = true,
+                    IsPersistent = loginModel.IsKeepLoggedIn,
+                };
 
-            //    };
+                await HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity), authenticationProperties);
 
-            //    HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity), authenticationProperties).GetAwaiter().GetResult();
-            //    return RedirectToAction("index", "home");
-            //}
-            //catch (Exception exception)
-            //{
-            //    TempData["LoginException"] = exception.Message;
-            //    return View();
-            //}
-
-            return View();
+                if (string.IsNullOrWhiteSpace(returnUrl))
+                {
+                    return RedirectToAction("index", "home");
+                }
+                return Redirect(returnUrl);
+            }
+            catch (Exception exception)
+            {
+                TempData["LoginException"] = exception.Message;
+                return View();
+            }
         }
         [HttpGet]
         public IActionResult Logout()
@@ -63,11 +76,16 @@ namespace SurveyApp.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterModel registerRequest)
         {
-            //await _authService.RegisterAsync(registerRequest);
-            return Json(new
-            {
-                isSuccess = true,
-            });
+            var result = await RestService.For<IAuthApi>("https://localhost:7193/api").RegisterAsync(registerRequest);
+
+            TempData["Register"] = "Kayıt olundu";
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

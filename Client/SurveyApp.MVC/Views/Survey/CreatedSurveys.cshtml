@@ -1,0 +1,90 @@
+﻿@model IEnumerable<SurveyDisplayModel>
+@{
+    ViewData["Title"] = "CreatedSurveys";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="mb-5">Oluşturduğun Anketler</h1>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info text-center" role="alert">
+        @TempData["Message"]
+    </div>
+}
+
+<ol class="list-group list-group-numbered">
+    @foreach (var survey in Model)
+    {
+        <li class="survey list-group-item d-flex justify-content-between align-items-start p-3">
+            <div class="ms-2 me-auto">
+                <div class="fw-bold">@survey.Title</div>
+                @(survey.CreatedAt) Tarihinde oluşturuldu
+            </div>
+            <div class="btn-group">
+                <a class="btn btn-outline-warning" asp-action="updateSurvey" asp-controller="survey" asp-route-surveyId=@survey.Id>
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <form asp-action="DeleteSurvey" asp-controller="survey" method="post">
+                    <input type="hidden" name="surveyId" value=@survey.Id />
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-surveyId=@survey.Id>
+                    <i class="bi bi-share"></i>
+                </button>
+            </div>
+        </li>
+    }
+</ol>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Anketi Paylaş</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="url" class="col-form-label">Url:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="url" aria-describedby="basic-addon1" disabled>
+                        <button class="btn btn-outline-success input-group-text" id="basic-addon1" onclick="copyUrl()"><i class="bi bi-clipboard-check-fill"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        const exampleModal = document.getElementById('exampleModal')
+        exampleModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            const surveyId = button.getAttribute('data-bs-surveyId')
+            // If necessary, you could initiate an AJAX request here
+            // and then do the updating in a callback.
+            //
+            // Update the modal's content.
+
+            const modalTitle = exampleModal.querySelector('.modal-title')
+            const modalBodyInput = exampleModal.querySelector('.modal-body input')
+            modalBodyInput.value = `https://localhost:7250/survey/surveyDetail?survey=${surveyId}`
+        })
+
+        const copyUrl = () => {
+            let url = document.getElementById('url').value
+            console.log(url);
+
+            navigator.clipboard.writeText(url)
+            alert("Kopyalandı!")
+        }
+    </script>
+}

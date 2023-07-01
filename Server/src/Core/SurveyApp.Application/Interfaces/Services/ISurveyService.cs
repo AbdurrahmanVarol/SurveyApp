@@ -10,9 +10,11 @@ namespace SurveyApp.Application.Interfaces.Services
 {
     public interface ISurveyService
     {
-        Task<SurveyResponse> GetSurveyByIdAsync(int id);
+        Task<SurveyResponse> GetSurveyByIdAsync(Guid id);
         Task<IEnumerable<SurveyDisplayResponse>> GetSurveysAsync();        
-        Task<int> AddAsync(CreateSurveyRequest request);
-
+        Task<Guid> AddAsync(CreateSurveyRequest request);
+        Task<IEnumerable<SurveyDisplayResponse>> GetSurveysByUserIdAsync(Guid userId);
+        Task DeleteAsync(Guid surveyId);
+        Task<SurveyDiplayForUpdateResponse> GetSurveyForUpdateByIdAsync(Guid id);
     }
 }

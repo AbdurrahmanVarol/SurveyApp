@@ -28,5 +28,11 @@ namespace SurveyApp.MVC.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [HttpGet]
+        public IActionResult NotFoundPage()
+        {
+            return View();
+        }
     }
 }

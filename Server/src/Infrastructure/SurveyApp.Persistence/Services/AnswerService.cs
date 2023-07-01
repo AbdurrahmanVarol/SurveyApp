@@ -46,18 +46,18 @@ namespace SurveyApp.Persistence.Services
             }
         }
 
-        public async Task<AnswerResultResponse> GetAnswerResultByQuestionIdAsync(int questionId)
+        public async Task<IEnumerable<AnswerResultResponse>> GetAnswerResultByQuestionIdAsync(int questionId)
         {
             //TODO: Mapping ekle
             //TODO: Debug ile kontol et
             var result = await _answerRepository.GetAnswerResultByQuestionIdAsync(questionId);
-            throw new NotImplementedException();
+            return _mapper.Map<IEnumerable<AnswerResultResponse>>(result);
         }
 
-        public Task<IEnumerable<AnswerResultResponse>> GetAnswerResultsBySurveyIdAsync(int surveyId)
+        public async Task<SurveyResultResponse> GetAnswerResultsBySurveyIdAsync(Guid surveyId)
         {
-            var result = _answerRepository.GetAnswerResultByQuestionIdAsync(surveyId);
-            throw new NotImplementedException();
+            var result = await _answerRepository.GetAnswerResultsBySurveyIdAsync(surveyId);
+            return _mapper.Map<SurveyResultResponse> (result);
         }
     }
 }

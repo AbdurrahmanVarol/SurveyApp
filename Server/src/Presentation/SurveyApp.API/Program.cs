@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
+using SurveyApp.Persistence.EntityFramework.Seeding;
+using SurveyApp.Persistence.EntityFramework.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,5 +79,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using var scope = app.Services.GetService<IServiceScopeFactory>()?.CreateScope();
+var services = scope.ServiceProvider;
+var context = services.GetRequiredService<SurveyAppContext>();
+context.Database.EnsureCreated();
+EfDbSeeding.SeedDatabase(context);
 
 app.Run();

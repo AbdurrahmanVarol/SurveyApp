@@ -25,7 +25,7 @@ namespace SurveyApp.API.Controllers
         }
 
         [HttpGet("{surveyId}")]
-        public async Task<IActionResult> GetBySurveyId(int surveyId)
+        public async Task<IActionResult> GetBySurveyId(Guid surveyId)
         {
             var questions = await _questionService.GetQuestionsBySurveyIdAsync(surveyId);
             return Ok(questions);

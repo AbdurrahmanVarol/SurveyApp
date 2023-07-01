@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using SurveyApp.Application.Interfaces.Repositories;
 using SurveyApp.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,14 @@ namespace SurveyApp.Application.Validators.FluentValidation
 {
     public class QuestionValidator : AbstractValidator<Question>
     {
-        private readonly DbContext _context;
+        private readonly ISurveyRepository _surveyRepository;
+        private readonly IQuestionTypeRepository _questionTypeRepository;
 
-        public QuestionValidator(DbContext context)
+        public QuestionValidator(ISurveyRepository surveyRepository, IQuestionTypeRepository questionTypeRepository)
         {
-            _context = context;
+            _surveyRepository = surveyRepository;
+            _questionTypeRepository = questionTypeRepository;
+         
             RuleFor(p => p.SurveyId).NotEmpty().Must(IsSurveyExist);
             RuleFor(p => p.QuestionTypeId).NotEmpty().Must(IsQuestionTypeExist);
             RuleFor(p => p.Text).NotEmpty();
@@ -23,13 +27,13 @@ namespace SurveyApp.Application.Validators.FluentValidation
 
         private bool IsQuestionTypeExist(int typeId)
         {
-            var result = _context.Set<QuestionType>().Any(p => p.Id == typeId);
+            var result = _questionTypeRepository.IsExist(typeId).GetAwaiter().GetResult();
             return result;
         }
 
-        private bool IsSurveyExist(int questionId)
+        private bool IsSurveyExist(Guid surveyId)
         {
-            var result = _context.Set<Question>().Any(p => p.Id == questionId);
+            var result = _surveyRepository.IsExist(surveyId).GetAwaiter().GetResult();
             return result;
         }
     }

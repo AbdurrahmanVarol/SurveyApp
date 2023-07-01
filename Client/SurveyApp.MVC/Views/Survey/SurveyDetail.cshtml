@@ -1,0 +1,164 @@
+﻿@model SurveyModel
+@{
+    ViewData["Title"] = "SurveyDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <div class="row shadow rounded p-3 mb-3">
+    <h2 class="text-center mb-3">@Model.Title</h2>
+    <h5>@Model.CreatedAt tarihinde oluşturuldu</h5>
+    <h5>@Model.CreatedBy.FullName tarafından oluşturuldu</h5>
+     </div>
+    @for (int i = 0; i < Model.Questions.Count(); i++)
+    {
+        <div class="question row shadow rounded p-3 mb-3" data-questionId=@Model.Questions[i].Id data-questionType=@Model.Questions[i].QuestionType.Id>
+            <h5>@($"Soru-{i+1} )") @Model.Questions[i].Text</h5>
+            <div class="option d-flex flex-column">
+                @if (Model.Questions[i].QuestionType.Id == 1)
+                {
+                    <div>
+                    @foreach (var option in Model.Questions[i].Options)
+                    {
+                            <input type="radio" class="btn-check" name=@($"option{Model.Questions[i].Id}") value=@option.Id id=@($"option{i + 1}-{option.Id}") autocomplete="off" />
+                        <label class="btn btn-outline-success" for=@($"option{i + 1}-{option.Id}")>@option.Text</label>
+                    }
+                        </div>
+                }
+                else if (Model.Questions[i].QuestionType.Id == 2)
+                {
+                    <div>
+                    @foreach (var option in Model.Questions[i].Options)
+                    {
+                            <input type="checkbox" class="btn-check" name=@($"option{Model.Questions[i].Id}") value=@option.Id id=@($"option{i + 1}-${option.Id}") autocomplete="off" />
+                        <label class="btn btn-outline-success" for=@($"option{i + 1}-${option.Id}")>@option.Text</label>
+                    }
+                    </div>
+                }
+                  else if (Model.Questions[i].QuestionType.Id == 3)
+                {
+                    <div class="btn-group" role="group">
+                        @for (int j = 0; j < 10; j++)
+                        {
+                            <input type="radio" class="btn-check" name=@($"option{Model.Questions[i].Id}") value=@j id=@($"option{i + 1}-${j + 99999}") autocomplete="off" />
+                            <label class="btn btn-outline-success" for=@($"option{i + 1}-${j + 99999}")>@j</label>
+                        }
+                    </div>
+                }
+                else if (Model.Questions[i].QuestionType.Id == 4)
+                {
+                    <div class="mb-3">
+                        <input class="form-control" name=@($"option{Model.Questions[i].Id}") id=@($"option{Model.Questions[i].Id}") />
+                    </div>
+
+                }
+                else if (Model.Questions[i].QuestionType.Id == 5)
+                {
+                    <div class="mb-3">
+                        <textarea class="form-control" name=@($"option{Model.Questions[i].Id}") id=@($"option{Model.Questions[i].Id}")></textarea>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    <button type="button" class="btn btn-success" onclick="sendAnswers()">Kaydet</button>
+    <div style="height:50vh;width:100%;">
+        <pre  id="result"></pre>
+
+    </div>
+    
+</div>
+
+@section Scripts{
+    <script>
+        const answers ={
+            surveyId:'',
+            optionalAnswers:[],
+            textAnswers:[]
+        }
+        const addAnswerByQuestionType = (questionTypeId, questionId) => {
+            console.log(questionTypeId)
+            console.log('soru: ' + questionId)
+            console.log("----------")
+            switch (questionTypeId) {
+                case '1':
+                    addRadioAnswer(questionTypeId,questionId)
+                    break
+                case '2':
+                    addCheckAnswer(questionTypeId,questionId)
+                    break
+                case '3':
+                    addRangeAnswer(questionTypeId,questionId)
+                    break
+                case '4':
+                    addTextAnswer(questionTypeId,questionId)
+                    break
+                case '5':
+                    addTextAnswer(questionTypeId,questionId)
+                    break
+            }
+        }
+        const addRadioAnswer = (questionTypeId, questionId) => {
+          
+            let options = [...document.getElementsByName(`option${questionId}`)]
+            let optionId = options.find(p => p.checked).value
+            answers.optionalAnswers.push({
+                questionId,
+                questionTypeId,
+                optionId
+            })
+        }
+        const addCheckAnswer = (questionTypeId, questionId) => {
+            let options = [...document.getElementsByName(`option${questionId}`)]
+            let checkedAnswers = options.filter(p => p.checked).map(p => p.value)
+            for(let checkedAnswer of checkedAnswers){
+                answers.optionalAnswers.push({
+                    questionId,
+                    questionTypeId,
+                    optionId: checkedAnswer
+                })
+            }
+        }
+        const addRangeAnswer = (questionTypeId, questionId) => {
+            let options = [...document.getElementsByName(`option${questionId}`)]
+            let answer = options.find(p => p.checked)
+            console.log(`option${questionId}`)
+            answers.textAnswers.push({
+                questionId,
+                questionTypeId,
+                value: answer.value
+            })
+        }
+        const addTextAnswer = (questionTypeId, questionId) => {
+            let answer = document.getElementById(`option${questionId}`).value
+            answers.textAnswers.push({
+                questionId,
+                questionTypeId,
+                value: answer
+            })
+        }
+        const sendAnswers = () =>{
+            let questions = [...document.querySelectorAll('.question')]
+
+            for(let question of questions){
+                let questionId = question.dataset.questionid
+                let questionTypeId = question.dataset.questiontype
+                console.log(question)
+              
+                addAnswerByQuestionType(questionTypeId, questionId)
+            }
+            console.log(answers),
+            document.getElementById('result').innerHTML = ''
+            document.getElementById('result').innerHTML = JSON.stringify(answers)
+
+
+            fetch('/answer/createanswer', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(answers)
+            })
+        }
+    </script>
+}

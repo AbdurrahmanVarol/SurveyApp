@@ -19,6 +19,7 @@ namespace SurveyApp.Persistence.EntityFramework.Contexts
         public DbSet<QuestionType> QuestionTypes { get; set; }
         public DbSet<Option> Options { get; set; }
         public DbSet<Answer> Answers { get; set; }
+        public DbSet<TextAnswer> TextAnswers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

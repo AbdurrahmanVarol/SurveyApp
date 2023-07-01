@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using SurveyApp.Application.Interfaces.Repositories;
 using SurveyApp.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,18 +12,18 @@ namespace SurveyApp.Application.Validators.FluentValidation
 {
     public class OptionValidator : AbstractValidator<Option>
     {
-        private readonly DbContext _context;
-        public OptionValidator(DbContext context)
+        private readonly IQuestionRepository _questionRepository;
+        public OptionValidator(IQuestionRepository questionRepository)
         {
-            _context = context;
+            _questionRepository = questionRepository;
 
-            RuleFor(p => p.QuestionId).NotEmpty().Must(IsQuesyionExist);
+            RuleFor(p => p.QuestionId).NotEmpty().Must(IsQuestionExist);
             RuleFor(p => p.Text).NotEmpty();
         }
 
-        private bool IsQuesyionExist(int questionId)
+        private bool IsQuestionExist(int questionId)
         {
-            var result = _context.Set<Question>().Any(p => p.Id == questionId);
+            var result = _questionRepository.IsExist(questionId).GetAwaiter().GetResult();
             return result;
         }
     }

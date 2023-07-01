@@ -18,6 +18,9 @@ namespace SurveyApp.Persistence.EntityFramework.Mapping
             builder.HasMany(x => x.Options)
                 .WithOne(x => x.Question)
                 .HasForeignKey(x => x.QuestionId);
+
+            builder.Navigation(p => p.QuestionType).AutoInclude();
+            builder.Navigation(p => p.Options).AutoInclude();
         }
     }
 }

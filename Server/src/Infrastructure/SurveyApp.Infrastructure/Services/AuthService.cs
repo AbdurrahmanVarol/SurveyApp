@@ -70,7 +70,8 @@ namespace SurveyApp.Infrastructure.Services
             var response = new LoginResponse
             {
                 Token = token,
-                RefreshToken = user.RefreshToken
+                RefreshToken = user.RefreshToken,
+                UserName = $"{user.FirstName} {user.LastName}"
             };
             return response;
         }
@@ -88,7 +89,8 @@ namespace SurveyApp.Infrastructure.Services
             var response = new LoginResponse
             {
                 Token = token,
-                RefreshToken = user.RefreshToken
+                RefreshToken = user.RefreshToken,
+                UserName = $"{user.FirstName} {user.LastName}"
             };
             return response;
         }

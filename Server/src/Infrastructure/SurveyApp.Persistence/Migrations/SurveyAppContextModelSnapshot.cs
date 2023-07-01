@@ -33,17 +33,14 @@ namespace SurveyApp.Persistence.Migrations
                     b.Property<int>("OptionId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("UserId1")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OptionId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Answers");
                 });
@@ -81,8 +78,8 @@ namespace SurveyApp.Persistence.Migrations
                     b.Property<int>("QuestionTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SurveyId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("SurveyId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -116,11 +113,10 @@ namespace SurveyApp.Persistence.Migrations
 
             modelBuilder.Entity("SurveyApp.Domain.Entities.Survey", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -137,6 +133,33 @@ namespace SurveyApp.Persistence.Migrations
                     b.HasIndex("CreatedById");
 
                     b.ToTable("Surveys");
+                });
+
+            modelBuilder.Entity("SurveyApp.Domain.Entities.TextAnswer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TextAnswers");
                 });
 
             modelBuilder.Entity("SurveyApp.Domain.Entities.User", b =>
@@ -188,7 +211,7 @@ namespace SurveyApp.Persistence.Migrations
 
                     b.HasOne("SurveyApp.Domain.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Option");
 
@@ -236,6 +259,23 @@ namespace SurveyApp.Persistence.Migrations
                     b.Navigation("CreatedBy");
                 });
 
+            modelBuilder.Entity("SurveyApp.Domain.Entities.TextAnswer", b =>
+                {
+                    b.HasOne("SurveyApp.Domain.Entities.Question", "Question")
+                        .WithMany("TextAnswers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SurveyApp.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Question");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SurveyApp.Domain.Entities.Option", b =>
                 {
                     b.Navigation("Answers");
@@ -244,6 +284,8 @@ namespace SurveyApp.Persistence.Migrations
             modelBuilder.Entity("SurveyApp.Domain.Entities.Question", b =>
                 {
                     b.Navigation("Options");
+
+                    b.Navigation("TextAnswers");
                 });
 
             modelBuilder.Entity("SurveyApp.Domain.Entities.QuestionType", b =>

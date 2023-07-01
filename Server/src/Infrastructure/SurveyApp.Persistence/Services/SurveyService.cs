@@ -29,7 +29,7 @@ namespace SurveyApp.Persistence.Services
             _validator = validator;
         }
 
-        public async Task<int> AddAsync(CreateSurveyRequest request)
+        public async Task<Guid> AddAsync(CreateSurveyRequest request)
         {
             var survey = _mapper.Map<Survey>(request);
             //var survey = new Survey
@@ -48,16 +48,39 @@ namespace SurveyApp.Persistence.Services
             return survey.Id;
         }
 
-        public async Task<SurveyResponse> GetSurveyByIdAsync(int id)
+        public async Task DeleteAsync(Guid surveyId)
+        {
+            var survey = await _surveyRepository.GetAsync(p=>p.Id == surveyId);
+            if(survey is null)
+            {
+                throw new ArgumentNullException(nameof(survey));
+            }
+            await _surveyRepository.DeleteAsync(survey);
+        }
+
+        public async Task<SurveyResponse> GetSurveyByIdAsync(Guid id)
         {
             var survey = await _surveyRepository.GetAsync(p => p.Id == id);
 
             return _mapper.Map<SurveyResponse>(survey);
         }
 
+        public async Task<SurveyDiplayForUpdateResponse> GetSurveyForUpdateByIdAsync(Guid id)
+        {
+            var survey = await _surveyRepository.GetAsync(p => p.Id == id);
+
+            return _mapper.Map<SurveyDiplayForUpdateResponse>(survey);
+        }
+
         public async Task<IEnumerable<SurveyDisplayResponse>> GetSurveysAsync()
         {
             var surveys = await _surveyRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<SurveyDisplayResponse>>(surveys);
+        }
+
+        public async Task<IEnumerable<SurveyDisplayResponse>> GetSurveysByUserIdAsync(Guid userId)
+        {
+            var surveys = await _surveyRepository.GetAllAsync(p=>p.CreatedById == userId);
             return _mapper.Map<IEnumerable<SurveyDisplayResponse>>(surveys);
         }
     }

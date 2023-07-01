@@ -39,12 +39,11 @@
         "icons/linkedin.svg",
         "icons/twitter.svg",
         "icons/instagram.svg",
-        "icons/github.svg",
-        "icons/microsoft.svg",
-        "icons/steam.svg",
-        "icons/apple.svg",
-        "icons/download.svg"
-
+        "icons/github.svg",      
+        "icons/share.svg",
+        "icons/clipboard-check.svg",
+        "icons/trash.svg",
+        "icons/pencil.svg"
       ]
     }
   ]

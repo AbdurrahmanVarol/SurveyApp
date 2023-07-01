@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SurveyApp.Persistence.EntityFramework.Repositories
@@ -19,38 +20,72 @@ namespace SurveyApp.Persistence.EntityFramework.Repositories
             _surveyAppContext = context;
         }
 
-        public async Task<AnswerResult> GetAnswerResultByQuestionIdAsync(int questionId)
+        public async Task<IEnumerable<AnswerResult>> GetAnswerResultByQuestionIdAsync(int questionId)
         {
             var result = await (
                     from answer in _surveyAppContext.Answers
                     join option in _surveyAppContext.Options on answer.OptionId equals option.Id
                     where option.QuestionId == questionId
-                    group new {answer,option} by new {option.Id,option.QuestionId} into g
+                    group new { answer, option } by new { option.Id, option.QuestionId } into g
                     select new AnswerResult
                     {
                         AnswerCount = g.Count(),
-                        Option = _surveyAppContext.Options.FirstOrDefault(p=>p.Id == g.Select(o=>o.option).FirstOrDefault().Id),
-                        Question = _surveyAppContext.Questions.FirstOrDefault(p=>p.Id == g.Select(o=>o.option).FirstOrDefault().QuestionId)
+                        Option = _surveyAppContext.Options.FirstOrDefault(p => p.Id == g.Select(o => o.option).FirstOrDefault().Id),
                     }
-                ).FirstOrDefaultAsync();
+                ).ToListAsync();
             return result;
         }
 
-        public async Task<IEnumerable<AnswerResult>> GetAnswerResultsBySurveyIdAsync(int surveyId)
+        public async Task<SurveyResult> GetAnswerResultsBySurveyIdAsync(Guid surveyId)
         {
             var result = await (
-                  from answer in _surveyAppContext.Answers
-                  join option in _surveyAppContext.Options on answer.OptionId equals option.Id
-                  join question in _surveyAppContext.Questions on option.QuestionId equals question.Id
-                  where question.SurveyId == surveyId
-                  group new { answer, option } by new { option.Id, option.QuestionId } into g
-                  select new AnswerResult
+                  from survey in _surveyAppContext.Surveys
+                  where survey.Id == surveyId
+                  select new SurveyResult
                   {
-                      AnswerCount = g.Count(),
-                      Option = _surveyAppContext.Options.FirstOrDefault(p => p.Id == g.Select(o => o.option).FirstOrDefault().Id),
-                      Question = _surveyAppContext.Questions.FirstOrDefault(p => p.Id == g.Select(o => o.option).FirstOrDefault().QuestionId)
-                  }
-              ).ToListAsync();
+                      Survey = new Survey
+                      {
+                          CreatedAt = survey.CreatedAt,
+                          CreatedById = survey.CreatedById,
+                          CreatedBy = survey.CreatedBy,
+                          Title = survey.Title,
+                          Questions = new List<Question>(),
+                          Id = survey.Id
+                      },
+                      Questions = _surveyAppContext.Questions.IgnoreAutoIncludes().Where(p => p.SurveyId == surveyId && (p.QuestionTypeId == 1 || p.QuestionTypeId == 2 || p.QuestionTypeId == 3)).Select(p => new QuestionResult
+                      {
+                          Question = new Question
+                          {
+                              QuestionTypeId = p.QuestionTypeId,
+                              SurveyId = p.SurveyId,
+                              Text = p.Text,
+                              QuestionType = null,
+                              Id = p.Id,
+                              Options = null,
+                              Survey = null,
+                              TextAnswers = null,
+
+                          },
+                          Answers = (
+                                     from answer in _surveyAppContext.Answers
+                                     join option in _surveyAppContext.Options on answer.OptionId equals option.Id
+                                     where option.QuestionId == p.Id
+                                     group new { answer, option } by new { option.Id, option.QuestionId } into g
+                                     select new AnswerResult
+                                     {
+                                         AnswerCount = g.Count(),
+                                         Option = _surveyAppContext.Options.Select(p => new Option
+                                         {
+                                             Text = p.Text,
+                                             QuestionId = p.QuestionId,
+                                             Id = p.Id,
+                                         }).FirstOrDefault(p => p.Id == g.Select(o => o.option).FirstOrDefault().Id)
+                                     }
+                                   ).ToList()
+                      }).ToList()
+                  }).FirstOrDefaultAsync();
+            //TODO:
+            var serialized = JsonSerializer.Serialize(result);
             return result;
         }
     }

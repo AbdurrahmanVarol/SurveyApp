@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SurveyApp.Application.Dtos.Requests;
 using SurveyApp.Application.Dtos.Responses;
+using SurveyApp.Domain.ComplexTypes;
 using SurveyApp.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -14,19 +15,36 @@ namespace SurveyApp.Application.Mapping.AutoMapper
     {
         public DefaultMapper()
         {
-            CreateMap<Survey, SurveyResponse>();
+            CreateMap<Survey, SurveyResponse>()
+                .ForMember(d => d.CreatedAt, s => s.MapFrom(m => DateTime.Parse(m.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss"))));   
+            CreateMap<Survey, SurveyDiplayForUpdateResponse>()
+                .ForMember(d => d.CreatedAt, s => s.MapFrom(m => DateTime.Parse(m.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss"))));
+            CreateMap<Survey, SurveyDisplayResponse>()
+                .ForMember(d => d.CreatedAt, s => s.MapFrom(m => DateTime.Parse(m.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss"))));
             CreateMap<CreateSurveyRequest, Survey>();
 
 
-            CreateMap<Option,OptionResponse>();
+            CreateMap<Option, OptionResponse>();
+            CreateMap<CreateOptionRequest, Option>();
 
-            CreateMap<Question, QuestionResponse>();    
-            CreateMap<Question, QuestionDisplayResponse>();    
+            CreateMap<Question, QuestionResponse>();
+            CreateMap<Question, QuestionDisplayResponse>();
             CreateMap<CreateQuestionRequest, Question>()
-                .ForMember(d=>d.Options,s=>s.MapFrom(m=>m.Options.Select(o=>new Option { Text = o}).ToList()));
-            
+                .ForMember(d => d.Options, s => s.MapFrom(m => m.Options.Select(o => new Option { Text = o }).ToList()));
+
+            CreateMap<QuestionType, QuestionTypeResponse>();
+
             CreateMap<Answer, AnswerResponse>();
             CreateMap<CreateAnswerRequest, Answer>();
+
+            CreateMap<CreateTextAnswerRequest, TextAnswer>();
+
+            CreateMap<User, UserDisplayResponse>()
+                .ForMember(d => d.FullName, s => s.MapFrom(m => $"{m.FirstName} {m.LastName}"));
+
+            CreateMap<AnswerResult,AnswerResultResponse>();
+            CreateMap<SurveyResult,SurveyResultResponse>();
+            CreateMap<QuestionResult,QuestionResultResponse>();
 
 
         }
