@@ -6,16 +6,18 @@ using SurveyApp.MVC.Models;
 using Refit;
 using System;
 using SurveyApp.MVC.Refit;
+using SurveyApp.MVC.Filters;
 
 namespace SurveyApp.MVC.Controllers
 {
+    [CustomExceptionFilter]
     public class AuthController : Controller
     {
-        private readonly IAuthApi _surveyAppApi;
+        private readonly IAuthApi _authApi;
 
-        public AuthController(IAuthApi surveyAppApi)
+        public AuthController(IAuthApi authApi)
         {
-            _surveyAppApi = surveyAppApi;
+            _authApi = authApi;
         }
 
         [HttpGet]
@@ -28,37 +30,36 @@ namespace SurveyApp.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel loginModel, string? returnUrl)
         {
-            try
+            var response = await _authApi.LoginAsync(loginModel);
+
+            if (!response.IsSuccessStatusCode)
             {
-                var result = await _surveyAppApi.LoginAsync(loginModel);
-
-                var claims = new List<Claim>
-                {
-                    new Claim("token" ,result.Token),
-                    new Claim("refreshToken",result.RefreshToken),
-                    new Claim(ClaimTypes.Name, result.UserName)
-                };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var authenticationProperties = new AuthenticationProperties
-                {
-                    AllowRefresh = true,
-                    IsPersistent = loginModel.IsKeepLoggedIn,
-                };
-
-                await HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity), authenticationProperties);
-
-                if (string.IsNullOrWhiteSpace(returnUrl))
-                {
-                    return RedirectToAction("index", "home");
-                }
-                return Redirect(returnUrl);
-            }
-            catch (Exception exception)
-            {
-                TempData["LoginException"] = exception.Message;
+                TempData["LoginException"] = "Kullanıcı adı ya da şifre hatalı";
                 return View();
             }
+
+            var claims = new List<Claim>
+                {
+                    new Claim("token" ,response.Content.Token),
+                    new Claim("refreshToken",response.Content.RefreshToken),
+                    new Claim(ClaimTypes.Name, response.Content.UserName)
+                };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authenticationProperties = new AuthenticationProperties
+            {
+                AllowRefresh = true,
+                IsPersistent = loginModel.IsKeepLoggedIn,
+            };
+
+            await HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity), authenticationProperties);
+
+            if (string.IsNullOrWhiteSpace(returnUrl))
+            {
+                return RedirectToAction("index", "home");
+            }
+            return Redirect(returnUrl);
+
         }
         [HttpGet]
         public IActionResult Logout()
@@ -76,7 +77,12 @@ namespace SurveyApp.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterModel registerRequest)
         {
-            var result = await RestService.For<IAuthApi>("https://localhost:7193/api").RegisterAsync(registerRequest);
+            var response = await _authApi.RegisterAsync(registerRequest);
+
+            if(response.IsSuccessStatusCode)
+            {
+                TempData["Register"] = "Kayıt olunamadı";
+            }
 
             TempData["Register"] = "Kayıt olundu";
             return View();

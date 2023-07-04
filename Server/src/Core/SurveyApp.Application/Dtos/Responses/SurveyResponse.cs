@@ -12,6 +12,7 @@ namespace SurveyApp.Application.Dtos.Responses
         public Guid Id { get; set; }
         public  string Title { get; set; }
         public DateTime CreatedAt { get; set; }
+        public UserDisplayResponse CreatedBy { get; set; }
         public IEnumerable<QuestionResponse> Questions { get; set; }
     }
 }

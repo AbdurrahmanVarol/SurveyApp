@@ -6,10 +6,10 @@ namespace SurveyApp.MVC.Refit
     public interface IAuthApi
     {
         [Post("/auth/login")]
-        Task<AuthModel> LoginAsync(LoginModel loginModel);
+        Task<ApiResponse<AuthModel>> LoginAsync(LoginModel loginModel);
 
         [Post("/auth/register")]
-        Task<UserModel> RegisterAsync(RegisterModel registerModel);
+        Task<ApiResponse<UserModel>> RegisterAsync(RegisterModel registerModel);
 
     }
 }

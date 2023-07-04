@@ -11,7 +11,7 @@ namespace SurveyApp.Application.Interfaces.Repositories
 {
     public interface IAnswerRepository : IEntityRepository<Answer>
     {
-        Task<SurveyResult> GetAnswerResultsBySurveyIdAsync(Guid surveyId);
+        Task<SurveyResult?> GetAnswerResultsBySurveyIdAsync(Guid surveyId);
         Task<IEnumerable<AnswerResult>> GetAnswerResultByQuestionIdAsync(int questionId);
     }
 }

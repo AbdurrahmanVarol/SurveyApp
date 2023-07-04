@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using SurveyApp.MVC.Filters;
 using SurveyApp.MVC.Models;
 using SurveyApp.MVC.Refit;
 using System.Drawing.Printing;
@@ -11,22 +12,24 @@ using System.Text.Json;
 
 namespace SurveyApp.MVC.Controllers
 {
+    [CustomExceptionFilter]
     public class SurveyController : Controller
     {
         private readonly ISurveyApi _surveyApi;
+        private readonly IAnswerApi _answerApi;
 
         private string Token => User.Claims.First(x => x.Type == "token").Value;
 
-        public SurveyController(ISurveyApi surveyApi)
+        public SurveyController(ISurveyApi surveyApi, IAnswerApi answerApi)
         {
             _surveyApi = surveyApi;
+            _answerApi = answerApi;
         }
 
         [HttpGet]
         [Authorize]
         public IActionResult CreateSurvey()
         {
-            //Todo:questiontype ı cache ten al
             return View();
         }
 
@@ -34,18 +37,16 @@ namespace SurveyApp.MVC.Controllers
         [Authorize]
         public async Task<IActionResult> CreateSurvey([FromBody] CreateSurveyModel createSurveyModel)
         {
-            //TODO:
-            createSurveyModel.CreatedAt = DateTime.Now;
-            var id = await _surveyApi.CreateSurveyAsync(createSurveyModel, Token);
 
-            var encodedId = Convert.ToBase64String(Encoding.UTF8.GetBytes(id.ToString()));
+            var response = await _surveyApi.CreateSurveyAsync(createSurveyModel, Token);
 
-            
+
 
             TempData["CreateSurvey"] = "Anket Oluşturuldu";
             return Json(new
             {
-                surveyId = encodedId
+                isSuccess = response.IsSuccessStatusCode,
+                surveyId = response.Content
             });
         }
 
@@ -67,17 +68,10 @@ namespace SurveyApp.MVC.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateSurvey([FromBody] UpdateSurveyModel createSurveyModel)
         {
-            ////TODO:
-            //createSurveyModel.CreatedAt = DateTime.Now;
-            //var id = await _surveyApi.CreateSurveyAsync(createSurveyModel, Token);
-
-            //var encodedId = Convert.ToBase64String(Encoding.UTF8.GetBytes(id.ToString()));
+            await _surveyApi.UpdateSurveyAsync(createSurveyModel, Token);
 
             TempData["CreateSurvey"] = "Anket Oluşturuldu";
-            return Json(new
-            {
-                surveyId = 1
-            });
+            return View();
         }
 
         [HttpGet]
@@ -104,16 +98,17 @@ namespace SurveyApp.MVC.Controllers
 
         [HttpGet]
         [Authorize]
-        public IActionResult SurveyResult()
+        public async Task<IActionResult> SurveyResult(Guid surveyId)
         {
-        //        var survetDetail = _surveyApi.GetSurveyById(surveyId);
 
-        //        if (survetDetail is null)
-        //        {
-        //            return RedirectToAction("notfound", "home");
-        //        }
+            var surveyResult = await _answerApi.GetSurveyResultById(surveyId,Token);
 
-                return View();
+            if (surveyResult is null)
+            {
+                return RedirectToAction("notfound", "home");
+            }
+
+            return View(surveyResult);
         }
 
         [HttpPost]

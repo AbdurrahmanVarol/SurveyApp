@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 using SurveyApp.Persistence.EntityFramework.Seeding;
 using SurveyApp.Persistence.EntityFramework.Contexts;
+using SurveyApp.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,10 +74,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionHandleMiddleware>();
 
 app.MapControllers();
 

@@ -3,8 +3,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SurveyApp.Application.Interfaces.Repositories;
 using SurveyApp.Application.Interfaces.Services;
+using SurveyApp.Application.Interfaces.Transaction;
 using SurveyApp.Persistence.EntityFramework.Contexts;
 using SurveyApp.Persistence.EntityFramework.Repositories;
+using SurveyApp.Persistence.EntityFramework.Transaction;
 using SurveyApp.Persistence.Services;
 
 namespace SurveyApp.Persistence
@@ -32,9 +34,12 @@ namespace SurveyApp.Persistence
             services.AddScoped<ISurveyService, SurveyService>();
             services.AddScoped<IQuestionService, QuestionService>();
             services.AddScoped<IAnswerService, AnswerService>();
+            services.AddScoped<IAnswerService2, AnswerService2>();
             services.AddScoped<ITextAnswerService, TextAnswerService>();
             services.AddScoped<IOptionService, OptionService>();
             services.AddScoped<IQuestionTypeService,QuestionTypeService>();
+
+            services.AddScoped<IDatabaseTransaction,EfTransaction>();
         }
     }
 }

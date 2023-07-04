@@ -29,7 +29,6 @@ namespace SurveyApp.Persistence.Services
 
         public async Task<int> AddAsync(CreateAnswerRequest request)
         {
-            //TODO:Validasyon ekle
             var answer = _mapper.Map<Answer>(request);
 
             _validator.ValidateAndThrowArgumentException(answer);
@@ -48,15 +47,20 @@ namespace SurveyApp.Persistence.Services
 
         public async Task<IEnumerable<AnswerResultResponse>> GetAnswerResultByQuestionIdAsync(int questionId)
         {
-            //TODO: Mapping ekle
-            //TODO: Debug ile kontol et
+         
             var result = await _answerRepository.GetAnswerResultByQuestionIdAsync(questionId);
             return _mapper.Map<IEnumerable<AnswerResultResponse>>(result);
         }
 
-        public async Task<SurveyResultResponse> GetAnswerResultsBySurveyIdAsync(Guid surveyId)
+        public async Task<SurveyResultResponse> GetAnswerResultsBySurveyIdAsync(Guid surveyId,Guid userId)
         {
             var result = await _answerRepository.GetAnswerResultsBySurveyIdAsync(surveyId);
+
+            if(result?.Survey.CreatedById != userId)
+            {
+                throw new ArgumentException($"Ulaşmak istediğiniz anket {result.Survey.CreatedBy.FirstName} {result.Survey.CreatedBy.LastName} kullanıcısına ait değil");
+            }
+
             return _mapper.Map<SurveyResultResponse> (result);
         }
     }

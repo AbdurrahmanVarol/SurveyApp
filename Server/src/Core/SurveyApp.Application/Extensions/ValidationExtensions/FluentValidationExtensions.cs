@@ -15,8 +15,7 @@ namespace SurveyApp.Application.Extensions.ValidationExtensions
 
             if (!res.IsValid)
             {
-                var ex = new ValidationException(res.Errors);
-                throw new ArgumentException(ex.Message, ex);
+                throw new ValidationException(res.Errors);
             }
         }
     }

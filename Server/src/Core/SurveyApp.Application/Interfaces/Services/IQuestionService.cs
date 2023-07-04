@@ -12,7 +12,10 @@ namespace SurveyApp.Application.Interfaces.Services
     {
         Task<int> AddAsync(CreateQuestionRequest request);
         Task<int> AddRangeAsync(IEnumerable<CreateQuestionRequest> request, Guid id);
+        Task DeleteRangeAsync(List<int> removedQuestions);
         Task<QuestionResponse> GetQuestionByIdAsync(int id);
         Task<IEnumerable<QuestionResponse>> GetQuestionsBySurveyIdAsync(Guid surveyId);
+        Task UpdateAsync(UpdateQuestionRequest question);
+        Task UpdateRangeAsync(List<UpdateQuestionRequest> questions);
     }
 }

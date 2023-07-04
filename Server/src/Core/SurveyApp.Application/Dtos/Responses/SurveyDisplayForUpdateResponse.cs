@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace SurveyApp.Application.Dtos.Responses
 {
-    public class SurveyDiplayForUpdateResponse
+    public class SurveyDisplayForUpdateResponse
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
         public DateTime CreatedAt { get; set; }
-        public IEnumerable<QuestionDisplayResponse> Questions { get; set; }
+        public Guid CreatedById { get; set; }
+        public IEnumerable<QuestionDisplayResponse> Questions { get; set; } = Enumerable.Empty<QuestionDisplayResponse>();
     }
 }

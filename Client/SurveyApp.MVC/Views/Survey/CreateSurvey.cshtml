@@ -14,17 +14,20 @@
     <div class="row shadow rounded p-3 mb-4">
         <h4>Sorular</h4>
         <div class="mb-3">
+            <input id="questionTempId" type="hidden" />
             <input id="question" class="form-control" placeholder="Sorunuzu giriniz..." />
         </div>
 
         @await Component.InvokeAsync("QuestionTypes")
 
-        <div class="input-group input-group-lg mb-3">
-            <input id="optionName" class="form-control" placeholder="Seçenek ekleyiniz..." />
-            <button type="button" class="btn btn-outline-success" onclick="addOption()">Seçenek Ekle</button>
+        <div id="optionDiv" class="">
+            <div class="input-group input-group-lg mb-3">
+                <input id="optionName" class="form-control" placeholder="Seçenek ekleyiniz..." />
+                <button type="button" class="btn btn-outline-success" onclick="addOption()">Seçenek Ekle</button>
+            </div>
+            <ul id="options">
+            </ul>
         </div>
-        <ul id="options">
-        </ul>
         <button type="button" class="btn btn-success" onclick="addQuestion()">Yeni Soru Ekle</button>
     </div>
     <div id="questions">
@@ -39,126 +42,6 @@
         const data = {
             title: "",
             questions: []
-        }
-
-        const getListItemAsString = (value) => {
-            return `
-                    <li class="fs-5 d-flex align-items-center mb-2">
-                        <button class="btn badge bg-danger text-light float-start me-2" onclick="removeOption(event)">&#x2715</button>
-                        <span>${value}</span>
-                    </li>
-                    `
-        }
-        const addOption = () => {
-            let optionName = document.getElementById('optionName')
-            let options = document.getElementById('options')
-
-            options.innerHTML += getListItemAsString(optionName.value)
-            optionName.value = ''
-        }
-        const removeOption = (event) => {
-            event.cancelBubble = true
-            let li = event.target.parentNode
-            let ul = event.target.parentNode.parentNode
-            ul.removeChild(li)
-        }
-        const addQuestion = () => {
-            let text = document.getElementById('question')
-            let questionType = document.getElementById('questionType')
-            let questionsElement = document.getElementById('questions')
-
-            let question = {
-                text: text.value,
-                questionTypeId: questionType.value,
-                options: [...document.querySelectorAll('#options li span')].map(p => p.innerText)
-            }
-            data.questions.push(question)
-            console.log(data)
-
-            questionsElement.innerHTML += getQuestionAsString(text.value, questionType.value)
-
-            document.getElementById('options').innerHTML = ''
-            text.value = ''
-            questionType.value = 0
-
-        }
-        const getQuestionAsString = (text, questionType) => {
-            let questions = [...document.querySelectorAll('#questions .row')]
-
-            let options = getOptionsAsHtml(questionType, questions.length)
-            console.log(options)
-            let html = `
-                                <div class="row shadow rounded p-3 mb-3">
-                                    <h5>Soru-${questions.length + 1}) ${text}</h5>
-                                    <div class="d-flex flex-column">
-                                    ${options}
-                                    </div>
-                                </div>
-                            `
-            return html
-        }
-        const getOptionsAsHtml = (questionType, questionNumber) => {
-            let options = [...document.querySelectorAll('#options li span')].map(p => p.innerText)
-            console.log(options)
-            switch (questionType) {
-                case '1':
-                    return getOptionsAsRadio(options, questionNumber)
-                case '2':
-                    return getOptionsAsCheck(options, questionNumber)
-                case '3':
-                    return getOptionsAsRange(questionNumber)
-                case '4':
-                    return getOptionsAsText(questionNumber)
-                case '5':
-                    return getOptionsAsTextArea(questionNumber)
-            }
-        }
-        const getOptionsAsRadio = (options, questionNumber) => {
-
-            let html = `<div>`
-
-            for (let i = 0; i < options.length; i++) {
-                html += `<input type="radio" class="btn-check" name="option${questionNumber + 1}" id="option${questionNumber + 1}-${i + 1}" autocomplete="off" />
-                         <label class="btn btn-outline-success" for="option${questionNumber + 1}-${i + 1}">${options[i]}</label>
-                         `
-            }
-            html += `</div>`
-            return html
-        }
-        const getOptionsAsCheck = (options, questionNumber) => {
-
-            let html = `<div>`
-
-            for (let i = 0; i < options.length; i++) {
-                html += `<input type="checkbox" class="btn-check" id="option${questionNumber + 1}-${i + 1}" autocomplete="off"/>
-                         <label class="btn btn-outline-success" for="option${questionNumber + 1}-${i + 1}">${options[i]}</label>
-                         `
-            }
-            html += `</div>`
-            return html
-        }
-        const getOptionsAsRange = (questionNumber) => {
-            let options = [...Array(10).keys()]
-            console.log(options)
-            let html = `<div class="btn-group" role="group">`
-            for (let option of options) {
-                html += `
-                         <input type="radio" class="btn-check" name="option${questionNumber + 1}" id="option${questionNumber + 1}-${option}" autocomplete="off" />
-                         <label class="btn btn-outline-success" for="option${questionNumber + 1}-${option}">${option}</label>
-                                `
-            }
-            html += `</div>`
-            return html
-        }
-        const getOptionsAsText = (questionNumber) => {
-            return `<div class="mb-3">
-                        <input class="form-control" name="option${questionNumber + 1}" id="option${questionNumber + 1}"/>
-                    </div>`
-        }
-        const getOptionsAsTextArea = (questionNumber) => {
-            return `<div class="mb-3">
-                        <textarea class="form-control" name="option${questionNumber + 1}" id="option${questionNumber + 1}"></textarea>
-                    </div>`
         }
         const addSurvey = () => {
             let title = document.getElementById('title').value
@@ -176,8 +59,226 @@
                 },
                 body: JSON.stringify(data)
             })
+                .then(response => response.json())
+                .then(data => {
+                    alertify.set('notifier', 'position', 'top-right');
+                    if (data.isSuccess) {
+                        alertify.success('Anket oluşturuldu')
+                    }
+                    else {
+                        alertify.error('Anket oluşturulamadı')
+                    }
+                })
+            document.getElementById('questions').innerHTML = ''
+            document.getElementById('question').value = ''
+            document.getElementById('title').value = ''
+            document.getElementById('questionType').value = 0
+            document.getElementById('options').innerHTML = ''
+
         }
 
+        const showQuestions = () => {
+            let questionsElement = document.getElementById('questions')
+
+            let html = ``
+            for (let index in data.questions.sort((a, b) => a.tempId - b.tempId)) {
+                html += getQuestionAsString(Number(index), data.questions[index])
+            }
+
+            questionsElement.innerHTML = ''
+            questionsElement.innerHTML = html
+
+        }
+
+        const getQuestionAsString = (index, question) => {
+            let questions = [...document.querySelectorAll('#questions .row')]
+
+            let options = getOptionsAsHtml(question.questionTypeId, index, question.options)
+            console.log(options)
+            let html = `
+                                               <div class="question row shadow rounded p-3 mb-3" id="question${question.tempId}" data-questionId='${question.tempId}' data-questionType=${question.questionTypeId}>
+                                                <div class="d-flex justify-content-between mb-3 ">
+                                                    <span>Soru-${+index + 1} ) ${question.text}</span>
+                                                    <span class="btn-group">
+                                                                             <button class="btn btn-outline-danger" onclick="removeQuestion('${question.tempId}')">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                                        <button class="btn btn-outline-warning" onclick="updateQuestion('${question.tempId}')">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </button>
+
+                                                    </span>
+                                                </div>
+                                                <div class="option d-flex flex-column">
+                                                  ${options}
+                                                                    </div>
+                                                                </div>
+                                                                    `
+            return html
+        }
+
+        const getOptionsAsHtml = (questionType, questionNumber, options) => {
+
+            switch (questionType) {
+                case '1':
+                    return getOptionsAsRadio(options, questionNumber)
+                case '2':
+                    return getOptionsAsCheck(options, questionNumber)
+                case '3':
+                    return getOptionsAsRange(questionNumber)
+                case '4':
+                    return getOptionsAsText(questionNumber)
+                case '5':
+                    return getOptionsAsTextArea(questionNumber)
+            }
+        }
+
+        const getOptionsAsRadio = (options, questionNumber) => {
+
+            let html = `<div>`
+
+            for (let index in options) {
+                html += `<input type="radio" class="btn-check" name="option${questionNumber + 1}" id="option${questionNumber + 1}-${Number(index) + 1}" autocomplete="off" />
+                                                                         <label class="btn btn-outline-success" for="option${questionNumber + 1}-${Number(index) + 1}">${options[index]}</label>
+                                                                 `
+            }
+            html += `</div>`
+            return html
+        }
+
+        const getOptionsAsCheck = (options, questionNumber) => {
+
+            let html = `<div>`
+
+            for (let index in options) {
+                html += `<input type="checkbox" class="btn-check" id="option${questionNumber + 1}-${Number(index) + 1}" autocomplete="off"/>
+                                                                         <label class="btn btn-outline-success" for="option${questionNumber + 1}-${Number(index) + 1}">${options[index]}</label>
+                                                                 `
+            }
+            html += `</div>`
+            return html
+        }
+
+        const getOptionsAsRange = (questionNumber) => {
+            let options = [...Array(10).keys()]
+            console.log(options)
+            let html = `<div class="btn-group" role="group">`
+            for (let option of options) {
+                html += `
+                                                                 <input type="radio" class="btn-check" name="option${questionNumber + 1}" id="option${questionNumber + 1}-${option}" autocomplete="off" />
+                                                                 <label class="btn btn-outline-success" for="option${questionNumber + 1}-${option}">${option}</label>
+                                                                        `
+            }
+            html += `</div>`
+            return html
+        }
+
+        const getOptionsAsText = (questionNumber) => {
+            return `<div class="mb-3">
+                                                                <input class="form-control" name="option${questionNumber + 1}" id="option${questionNumber + 1}"/>
+                                                            </div>`
+        }
+
+        const getOptionsAsTextArea = (questionNumber) => {
+            return `<div class="mb-3">
+                                                                <textarea class="form-control" name="option${questionNumber + 1}" id="option${questionNumber + 1}"></textarea>
+                                                            </div>`
+        }
+
+        const addOption = () => {
+            let optionName = document.getElementById('optionName')
+            let options = document.getElementById('options')
+
+            options.innerHTML += getListItemAsString(optionName.value)
+            optionName.value = ''
+        }
+
+        const getListItemAsString = (value) => {
+            return `
+                                                    <li class="fs-5 d-flex align-items-center mb-2">
+                                                        <button class="btn badge bg-danger text-light float-start me-2" onclick="removeOption(event)">&#x2715</button>
+                                                        <span>${value}</span>
+                                                    </li>
+                                                    `
+        }
+
+        const removeOption = (event) => {
+            event.cancelBubble = true
+            let li = event.target.parentNode
+            let ul = event.target.parentNode.parentNode
+            ul.removeChild(li)
+        }
+
+        const addQuestion = () => {
+            let questionTempId = document.getElementById('questionTempId')
+            let text = document.getElementById('question')
+            let questionType = document.getElementById('questionType')
+            let questionsElement = document.getElementById('questions')
+
+            let question = {
+                text: text.value,
+                questionTypeId: questionType.value,
+                options: [...document.querySelectorAll('#options li span')].map(p => p.innerText)
+            }
+            question.tempId = questionTempId.value ? questionTempId.value : Date.now()
+
+            remove(questionTempId.value)
+
+            data.questions.push(question)
+            console.log(data)
+
+            questionTempId.value = ''
+            document.getElementById('options').innerHTML = ''
+            text.value = ''
+            questionType.value = 0
+            document.getElementById('options').innerHTML = ''
+
+            showQuestions()
+
+            alertify.success('Soru eklendi')
+
+        }
+
+        const remove = questionTempId => {
+            if (data.questions.some(p => p.tempId == questionTempId)) {
+                let index = data.questions.findIndex(p => p.tempId == questionTempId)
+                if (index == 0) {
+                    data.questions.shift()
+                }
+                else {
+                    data.questions.splice(index, 1)
+                }
+            }
+        }
+
+        const removeQuestion = questionTempId => {
+            remove(questionTempId)
+            showQuestions()
+        }
+
+        const updateQuestion = (questionTempId) => {
+            let questionTempIdElement = document.getElementById('questionTempId')
+            let questionElement = document.getElementById('question')
+            let options = document.getElementById('options')
+
+            let selectedQuestion = data.questions.find(p => p.tempId == questionTempId)
+            questionTempIdElement.value = selectedQuestion.tempId
+            questionElement.value = selectedQuestion.text
+
+            options.innerHTML = ''
+
+            let html = ``
+            for (let option of selectedQuestion.options) {
+                html += getListItemAsString(option)
+            }
+            options.innerHTML = html
+
+            let questionTypes = [...document.querySelectorAll('#questionType option')]
+            for (let questionType of questionTypes) {
+                questionType.selected = false
+            }
+            questionTypes.find(p => p.value == selectedQuestion.questionTypeId).selected = true
+        }
     </script>
 }
 

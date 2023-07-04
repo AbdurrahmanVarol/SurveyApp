@@ -6,9 +6,15 @@ namespace SurveyApp.MVC.Refit
     public interface IAnswerApi
     {
         [Post("/answers/CreateOptionalAnswers")]
-        Task CreateOptionalAnswers(IEnumerable<OptionalAnswerModel> optionalAnswers);  
+        Task<IApiResponse> CreateOptionalAnswers(IEnumerable<OptionalAnswerModel> optionalAnswers);  
         
         [Post("/answers/CreateTextAnswers")]
-        Task CreateTextAnswers(IEnumerable<TextAnswerModel> optionalAnswers);
+        Task<IApiResponse> CreateTextAnswers(IEnumerable<TextAnswerModel> optionalAnswers);
+        
+        [Post("/answers/CreateSurveyAnswers")]
+        Task<IApiResponse> CreateSurveyAnswers(AnswerModel surveyAnswers);
+
+        [Get("/answers/surveyResult/{surveyId}")]
+        Task<SurverResultModel> GetSurveyResultById(Guid surveyId, [Authorize("Bearer")] string token);
     }
 }

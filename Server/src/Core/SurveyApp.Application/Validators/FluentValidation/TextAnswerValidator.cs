@@ -18,6 +18,7 @@ namespace SurveyApp.Application.Validators.FluentValidation
             _questionRepository = questionRepository;
             _userRepository = userRepository;
 
+            RuleFor(p => p.Value).NotEmpty();
             RuleFor(p => p.QuestionId).NotEmpty().Must(IsQuestionExist);
             When(p => p.UserId != null, () =>
             {

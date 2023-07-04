@@ -7,5 +7,6 @@ namespace SurveyApp.MVC.Refit
     {
         [Get("/questionTypes")]
         Task<IEnumerable<QuestionTypeModel>> GetQuestionTypes();
+      
     }
 }

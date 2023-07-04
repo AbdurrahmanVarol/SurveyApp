@@ -50,23 +50,23 @@ namespace SurveyApp.Persistence.EntityFramework.Seeding
                {
                    new QuestionType
                    {
-                       Name="Tek Seçimli"
+                       Name="Radio"
                    },
                    new QuestionType
                    {
-                       Name="Çok Seçimli"
+                       Name="Check"
                    },
                    new QuestionType
                    {
-                       Name="Aralıklı"
+                       Name="Range"
                    },
                    new QuestionType
                    {
-                       Name="Açık Uçlu"
+                       Name="Text"
                    },
                    new QuestionType
                    {
-                       Name="Kapalı Uçlu"
+                       Name="Text Area"
                    }
                };
                 context.QuestionTypes.AddRange(questionTypes);

@@ -19,6 +19,16 @@ namespace SurveyApp.API.Controllers
             _surveyService = surveyService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var survey = await _surveyService.GetSurveysAsync();
+
+            if(survey is  null) { 
+                return NotFound();
+            }
+            return Ok(survey);
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
@@ -60,6 +70,15 @@ namespace SurveyApp.API.Controllers
             request.CreatedById = UserId;
             var id = await _surveyService.AddAsync(request);
             return Created($"/surveys/{id}",id);
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> Put([FromBody] UpdateSurveyRequest request)
+        {
+            request.CreatedById = UserId;
+            await _surveyService.UpdateAsync(request);
+            return Ok(request);
         }
 
         [HttpDelete]

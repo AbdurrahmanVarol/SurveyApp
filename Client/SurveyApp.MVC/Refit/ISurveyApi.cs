@@ -5,6 +5,9 @@ namespace SurveyApp.MVC.Refit
 {
     public interface ISurveyApi
     {
+        [Get("/surveys")]
+        Task<IEnumerable<SurveyDisplayModel>> GetSurveys(); 
+
         [Get("/surveys/{id}")]
         Task<SurveyModel> GetSurveyById(Guid id); 
         
@@ -17,7 +20,9 @@ namespace SurveyApp.MVC.Refit
         Task<IEnumerable<SurveyDisplayModel>> GetCreatedSurveysAsync([Authorize("Bearer")] string token);
         
         [Post("/surveys")]
-        Task<int> CreateSurveyAsync(CreateSurveyModel createSurveyModel, [Authorize("Bearer")] string token);
+        Task<ApiResponse<int>> CreateSurveyAsync(CreateSurveyModel createSurveyModel, [Authorize("Bearer")] string token);
+        [Put("/surveys")]
+        Task UpdateSurveyAsync(UpdateSurveyModel updateSurveyModel, [Authorize("Bearer")] string token);
         
         [Delete("/surveys")]
         Task DeleteSurveyAsync(Guid surveyId, [Authorize("Bearer")] string token);

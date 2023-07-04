@@ -16,7 +16,7 @@
 <ol class="list-group list-group-numbered">
     @foreach (var survey in Model)
     {
-        <li class="survey list-group-item d-flex justify-content-between align-items-start p-3">
+        <li class="list-group-item d-flex justify-content-between align-items-start p-3" role="button" onclick="reditect(event)" data-id='@survey.Id'>
             <div class="ms-2 me-auto">
                 <div class="fw-bold">@survey.Title</div>
                 @(survey.CreatedAt) Tarihinde oluşturuldu
@@ -31,7 +31,7 @@
                         <i class="bi bi-trash"></i>
                     </button>
                 </form>
-                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-surveyId=@survey.Id>
+                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-surveyId=@survey.Id onclick="cancelBubble(event)">
                     <i class="bi bi-share"></i>
                 </button>
             </div>
@@ -51,7 +51,7 @@
                     <label for="url" class="col-form-label">Url:</label>
                     <div class="input-group">
                         <input type="text" class="form-control" id="url" aria-describedby="basic-addon1" disabled>
-                        <button class="btn btn-outline-success input-group-text" id="basic-addon1" onclick="copyUrl()"><i class="bi bi-clipboard-check-fill"></i></button>
+                        <button class="btn btn-outline-success input-group-text" id="basic-addon1" onclick="copyUrl(event)"><i class="bi bi-clipboard-check-fill"></i></button>
                     </div>
                 </div>
             </div>
@@ -79,12 +79,24 @@
             modalBodyInput.value = `https://localhost:7250/survey/surveyDetail?survey=${surveyId}`
         })
 
-        const copyUrl = () => {
+        const cancelBubble = event => {
+            event.cancelBubble = true
+        }
+
+        const copyUrl = (event) => {
+
             let url = document.getElementById('url').value
             console.log(url);
 
             navigator.clipboard.writeText(url)
-            alert("Kopyalandı!")
+            alertify.set('notifier', 'position', 'top-right');
+            alertify.success('Kopyalandı');
+        }
+
+        const reditect = (event) => {
+            console.log(event.target.getAttribute("data-id"));
+            let id = event.target.getAttribute("data-id");
+            window.location.href = `/survey/surveyResult?surveyId=${id}`
         }
     </script>
 }

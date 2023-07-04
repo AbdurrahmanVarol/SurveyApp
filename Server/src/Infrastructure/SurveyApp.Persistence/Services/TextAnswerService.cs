@@ -29,7 +29,9 @@ namespace SurveyApp.Persistence.Services
         public async Task<int> AddAsync(CreateTextAnswerRequest request)
         {
             var answer = _mapper.Map<TextAnswer>(request);
+
             _validator.ValidateAndThrowArgumentException(answer);
+
             await _textAnswerRepository.AddAsync(answer);
             return answer.Id;
         }

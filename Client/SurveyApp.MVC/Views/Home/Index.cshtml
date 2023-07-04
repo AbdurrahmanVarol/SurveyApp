@@ -1,8 +1,21 @@
-﻿@{
+﻿@model IEnumerable<SurveyDisplayModel>
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<h1 class="mb-5">Anketler</h1>
+<div id="activeSurveys" class="">
+    @foreach (var survey in Model)
+    {
+        <a class="survey shadow p-3" asp-action="surveydetail" asp-controller="survey" asp-route-survey="@survey.Id">
+            <h5>@survey.Title</h5>
+            <p>@survey.CreatedAt tarihinde oluşturuldu.</p>
+            <p>@survey.CreatedBy tarafından oluşturuldu.</p>
+        </a>
+    }
 </div>

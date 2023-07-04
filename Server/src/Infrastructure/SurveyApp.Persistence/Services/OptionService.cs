@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using FluentValidation;
 using SurveyApp.Application.Dtos.Requests;
 using SurveyApp.Application.Extensions.ValidationExtensions;
@@ -41,11 +42,26 @@ namespace SurveyApp.Persistence.Services
             foreach (var option in request)
             {
 
-                await AddAsync(new CreateOptionRequest 
-                { 
+                await AddAsync(new CreateOptionRequest
+                {
                     Text = option,
                     QuestionId = questionId
                 });
+            }
+        }
+
+        public async Task DeleteAsync(int optionId)
+        {
+            var option = await _optionRepository.GetAsync(p => p.Id == optionId) ?? throw new ArgumentException("");
+
+            await _optionRepository.DeleteAsync(option);
+        }
+
+        public async Task DeleteRangeAsync(IEnumerable<int> removedOptions)
+        {
+            foreach (var optionId in removedOptions)
+            {
+                await DeleteAsync(optionId);
             }
         }
     }

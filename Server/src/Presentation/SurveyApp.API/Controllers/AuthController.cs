@@ -32,7 +32,6 @@ namespace SurveyApp.API.Controllers
         [HttpPost("Refresh")]
         public async Task<ActionResult<LoginResponse>> Refresh([FromBody] RefreshTokenRequest refreshTokenRequest)
         {
-            //TODO:
             refreshTokenRequest.UserId = UserId;
             return await _authService.RefreshTokenAsync(refreshTokenRequest);
         }

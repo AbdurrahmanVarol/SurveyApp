@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SurveyApp.MVC.Models;
+using SurveyApp.MVC.Refit;
 using System.Diagnostics;
 
 namespace SurveyApp.MVC.Controllers
@@ -7,15 +8,18 @@ namespace SurveyApp.MVC.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ISurveyApi _surveyApi;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ISurveyApi surveyApi)
         {
             _logger = logger;
+            _surveyApi = surveyApi;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var surveys = await _surveyApi.GetSurveys();
+            return View(surveys);
         }
 
         public IActionResult Privacy()
@@ -24,9 +28,9 @@ namespace SurveyApp.MVC.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(ErrorViewModel model)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(model);
         }
 
         [HttpGet]

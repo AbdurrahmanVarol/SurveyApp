@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using FluentValidation;
 using SurveyApp.Application.Dtos.Requests;
 using SurveyApp.Application.Dtos.Responses;
@@ -31,7 +32,6 @@ namespace SurveyApp.Persistence.Services
 
         public async Task<int> AddAsync(CreateQuestionRequest request)
         {
-            //TODO:Mapping düzgün çalışıyor mu?
             var question = _mapper.Map<Question>(request);
 
             _validator.ValidateAndThrowArgumentException(question);
@@ -55,6 +55,11 @@ namespace SurveyApp.Persistence.Services
             return 0;
         }
 
+        public Task DeleteRangeAsync(List<int> removedQuestions)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<QuestionResponse> GetQuestionByIdAsync(int id)
         {
             var question = await _questionRepository.GetAsync(p => p.Id == id);
@@ -63,9 +68,37 @@ namespace SurveyApp.Persistence.Services
 
         public async Task<IEnumerable<QuestionResponse>> GetQuestionsBySurveyIdAsync(Guid surveyId)
         {
-            //TODO:Mapping düzgün çalışıyor mu?
             var questions = await _questionRepository.GetAllAsync(p => p.SurveyId == surveyId);
             return _mapper.Map<IEnumerable<QuestionResponse>>(questions);
+        }
+
+        public async Task UpdateAsync(UpdateQuestionRequest request)
+        {
+            var question = await _questionRepository.GetAsync(p => p.Id == request.Id) ?? throw new ArgumentNullException(nameof(request));
+
+            var updatedQuestion = _mapper.Map<Question>(request);
+
+            _validator.ValidateAndThrowArgumentException(updatedQuestion);
+
+            await _questionRepository.UpdateAsync(updatedQuestion);
+
+            if (request.QuestionTypeId == 1 || request.QuestionTypeId == 2)
+            {
+                var addedOptions = request.Options.Where(p=> p.Id == null).Select(p => p.Text);
+                var removedOptions = question.Options.Where(p => !request.Options.Where(p=>p.Id != null).Select(s => s.Id).Contains(p.Id)).Select(p => p.Id);
+                //var updatedOptions = request.Options.RemoveAll(u=>addedOptions.Contains(u)|| removedOptions.Select(r=>r.Id).Contains(u.Id));
+
+                await _optionService.AddRangeAsync(addedOptions, updatedQuestion.Id);
+                await _optionService.DeleteRangeAsync(removedOptions);
+            }
+
+        }
+        public async Task UpdateRangeAsync(List<UpdateQuestionRequest> questions)
+        {
+            foreach (var questionRequest in questions)
+            {
+                await UpdateAsync(questionRequest);
+            }
         }
     }
 }

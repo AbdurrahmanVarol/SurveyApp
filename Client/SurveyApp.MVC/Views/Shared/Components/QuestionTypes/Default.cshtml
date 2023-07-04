@@ -1,7 +1,7 @@
 ﻿@model QuestionTypeViewModel
 
 <div class="mb-3 form-floating">
-    <select class="form-select" id="questionType">
+    <select class="form-select" id="questionType" onchange="checkQuestionType(event)">
         @if(Model.SelectedType == null)
         {
             <option value="0" selected hidden>Seçiniz</option>

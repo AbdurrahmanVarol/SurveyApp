@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Refit;
 using SurveyApp.MVC.Middlewares;
-using SurveyApp.MVC.Refit;
-using System.Net.Http.Headers;
+using SurveyApp.MVC.Extensions;
+using SurveyApp.MVC.Caching;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,27 +16,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         option.AccessDeniedPath = "/auth/accessdenied";
     });
 
-builder.Services.AddRefitClient(typeof(IAuthApi)).ConfigureHttpClient(option =>
-{
-    option.BaseAddress = new Uri("https://localhost:7193/api");
-    option.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-});
+builder.Services.AddRefitClients(builder.Configuration);
 
-builder.Services.AddRefitClient(typeof(ISurveyApi)).ConfigureHttpClient(option =>
-{
-    option.BaseAddress = new Uri("https://localhost:7193/api");
-    option.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-});
-builder.Services.AddRefitClient(typeof(IAnswerApi)).ConfigureHttpClient(option =>
-{
-    option.BaseAddress = new Uri("https://localhost:7193/api");
-    option.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-});
-builder.Services.AddRefitClient(typeof(IQuestionTypeApi)).ConfigureHttpClient(option =>
-{
-    option.BaseAddress = new Uri("https://localhost:7193/api");
-    option.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-});
+builder.Services.AddMemoryCache();
+
+builder.Services.AddSingleton<ICache, InMemoryCache>();
 
 var app = builder.Build();
 
@@ -53,6 +36,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseMiddleware<NotFoundMiddleware>();
+app.UseMiddleware<ExceptionHandleMiddleware>();
 
 app.UseRouting();
 

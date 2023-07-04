@@ -12,14 +12,16 @@ namespace SurveyApp.API.Controllers
     public class AnswersController : ControllerBase
     {
         private readonly IAnswerService _answerService;
+        private readonly IAnswerService2 _answerService2;
         private readonly ITextAnswerService _textAnswerService;
 
         private Guid UserId => Guid.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
-        public AnswersController(IAnswerService answerService, ITextAnswerService textAnswerService)
+        public AnswersController(IAnswerService answerService, ITextAnswerService textAnswerService, IAnswerService2 answerService2)
         {
             _answerService = answerService;
             _textAnswerService = textAnswerService;
+            _answerService2 = answerService2;
         }
 
         [HttpGet("questionResult/{questionId}")]
@@ -28,11 +30,19 @@ namespace SurveyApp.API.Controllers
             var result = await _answerService.GetAnswerResultByQuestionIdAsync(questionId);
             return Ok(result);
         }
+        //TODO:FİLTER
         [HttpGet("surveyResult/{surveyId}")]
         public async Task<IActionResult> GetSurveyResult(Guid surveyId)
         {
-            var result = await _answerService.GetAnswerResultsBySurveyIdAsync(surveyId);
+            var result = await _answerService.GetAnswerResultsBySurveyIdAsync(surveyId,UserId);
             return Ok(result);
+        }
+
+        [HttpPost("CreateSurveyAnswers")]
+        public async Task<IActionResult> CreateSurveyAnswers(CreateSurveyAnswerRequest surveyAnswers)
+        {
+            await _answerService2.CreateSurveyAnswersAsync(surveyAnswers);
+            return Ok(true);
         }
 
         [HttpPost("CreateOptionalAnswers")]

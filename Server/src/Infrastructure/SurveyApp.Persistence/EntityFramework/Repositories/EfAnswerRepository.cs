@@ -30,13 +30,13 @@ namespace SurveyApp.Persistence.EntityFramework.Repositories
                     select new AnswerResult
                     {
                         AnswerCount = g.Count(),
-                        Option = _surveyAppContext.Options.FirstOrDefault(p => p.Id == g.Select(o => o.option).FirstOrDefault().Id),
+                        Option = _surveyAppContext.Options.FirstOrDefault(p => p.Id == g.Select(o => o.option.Id).First()),
                     }
                 ).ToListAsync();
             return result;
         }
 
-        public async Task<SurveyResult> GetAnswerResultsBySurveyIdAsync(Guid surveyId)
+        public async Task<SurveyResult?> GetAnswerResultsBySurveyIdAsync(Guid surveyId)
         {
             var result = await (
                   from survey in _surveyAppContext.Surveys
@@ -52,7 +52,8 @@ namespace SurveyApp.Persistence.EntityFramework.Repositories
                           Questions = new List<Question>(),
                           Id = survey.Id
                       },
-                      Questions = _surveyAppContext.Questions.IgnoreAutoIncludes().Where(p => p.SurveyId == surveyId && (p.QuestionTypeId == 1 || p.QuestionTypeId == 2 || p.QuestionTypeId == 3)).Select(p => new QuestionResult
+                      //TODO:Enum
+                      Questions = _surveyAppContext.Questions.Where(p => p.SurveyId == surveyId && (p.QuestionTypeId == 1 || p.QuestionTypeId == 2 || p.QuestionTypeId == 3)).Select(p => new QuestionResult
                       {
                           Question = new Question
                           {
@@ -79,13 +80,11 @@ namespace SurveyApp.Persistence.EntityFramework.Repositories
                                              Text = p.Text,
                                              QuestionId = p.QuestionId,
                                              Id = p.Id,
-                                         }).FirstOrDefault(p => p.Id == g.Select(o => o.option).FirstOrDefault().Id)
+                                         }).First(p => p.Id == g.Select(o => o.option.Id).First())
                                      }
                                    ).ToList()
                       }).ToList()
                   }).FirstOrDefaultAsync();
-            //TODO:
-            var serialized = JsonSerializer.Serialize(result);
             return result;
         }
     }

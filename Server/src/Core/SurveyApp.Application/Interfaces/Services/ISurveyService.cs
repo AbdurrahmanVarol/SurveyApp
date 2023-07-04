@@ -15,6 +15,7 @@ namespace SurveyApp.Application.Interfaces.Services
         Task<Guid> AddAsync(CreateSurveyRequest request);
         Task<IEnumerable<SurveyDisplayResponse>> GetSurveysByUserIdAsync(Guid userId);
         Task DeleteAsync(Guid surveyId);
-        Task<SurveyDiplayForUpdateResponse> GetSurveyForUpdateByIdAsync(Guid id);
+        Task<SurveyDisplayForUpdateResponse> GetSurveyForUpdateByIdAsync(Guid id);
+        Task UpdateAsync(UpdateSurveyRequest updateSurveyRequest);
     }
 }

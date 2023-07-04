@@ -11,5 +11,7 @@ namespace SurveyApp.Application.Interfaces.Services
     {
         Task<int> AddAsync(CreateOptionRequest request);
         Task AddRangeAsync(IEnumerable<string> request,int questionId);
+        Task DeleteAsync(int optionId);
+        Task DeleteRangeAsync(IEnumerable<int> removedOptions);
     }
 }

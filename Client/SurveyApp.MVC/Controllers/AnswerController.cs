@@ -14,11 +14,15 @@ namespace SurveyApp.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAnswer([FromBody]AnswerModel answerModel)
+        public async Task<IActionResult> CreateAnswer([FromBody]AnswerModel surveyAnswers)
         {
-            await _answerApi.CreateOptionalAnswers(answerModel.OptionalAnswers);
-            await _answerApi.CreateTextAnswers(answerModel.TextAnswers);
-            return Ok(answerModel);
+            var response = await _answerApi.CreateSurveyAnswers(surveyAnswers);
+            //var optionalResponse = await _answerApi.CreateOptionalAnswers(answerModel.OptionalAnswers);
+            //var textResponse = await _answerApi.CreateTextAnswers(answerModel.TextAnswers);
+
+            return Json(new {
+                isSuccess = response.IsSuccessStatusCode
+            });
         }
     }
 }
