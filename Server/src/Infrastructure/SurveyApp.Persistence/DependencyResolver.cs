@@ -34,7 +34,7 @@ namespace SurveyApp.Persistence
             services.AddScoped<ISurveyService, SurveyService>();
             services.AddScoped<IQuestionService, QuestionService>();
             services.AddScoped<IAnswerService, AnswerService>();
-            services.AddScoped<IAnswerService2, AnswerService2>();
+            services.AddScoped<ISurveyAnswerService, SurveyAnswerService>();
             services.AddScoped<ITextAnswerService, TextAnswerService>();
             services.AddScoped<IOptionService, OptionService>();
             services.AddScoped<IQuestionTypeService,QuestionTypeService>();

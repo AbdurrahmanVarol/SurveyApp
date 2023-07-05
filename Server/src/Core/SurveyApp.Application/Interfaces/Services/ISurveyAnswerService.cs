@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SurveyApp.Application.Interfaces.Services
 {
-    public interface IAnswerService2
+    public interface ISurveyAnswerService
     {
         Task CreateSurveyAnswersAsync(CreateSurveyAnswerRequest request);
     }

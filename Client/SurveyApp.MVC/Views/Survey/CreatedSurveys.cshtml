@@ -16,18 +16,21 @@
 <ol class="list-group list-group-numbered">
     @foreach (var survey in Model)
     {
-        <li class="list-group-item d-flex justify-content-between align-items-start p-3" role="button" onclick="reditect(event)" data-id='@survey.Id'>
+        <li class="list-group-item d-flex justify-content-between align-items-start p-3" data-id='@survey.Id'>
             <div class="ms-2 me-auto">
                 <div class="fw-bold">@survey.Title</div>
                 @(survey.CreatedAt) Tarihinde oluşturuldu
             </div>
             <div class="btn-group">
+                <a class="btn btn-outline-info" asp-action="surveyResult" asp-controller="survey" asp-route-surveyId=@survey.Id>
+                    <i class="bi bi-clipboard-data"></i>
+                </a> 
                 <a class="btn btn-outline-warning" asp-action="updateSurvey" asp-controller="survey" asp-route-surveyId=@survey.Id>
                     <i class="bi bi-pencil"></i>
                 </a>
                 <form asp-action="DeleteSurvey" asp-controller="survey" method="post">
                     <input type="hidden" name="surveyId" value=@survey.Id />
-                    <button type="submit" class="btn btn-outline-danger">
+                    <button type="submit" class="btn btn-outline-danger" onclick="cancelBubble(event)">
                         <i class="bi bi-trash"></i>
                     </button>
                 </form>
@@ -91,12 +94,6 @@
             navigator.clipboard.writeText(url)
             alertify.set('notifier', 'position', 'top-right');
             alertify.success('Kopyalandı');
-        }
-
-        const reditect = (event) => {
-            console.log(event.target.getAttribute("data-id"));
-            let id = event.target.getAttribute("data-id");
-            window.location.href = `/survey/surveyResult?surveyId=${id}`
         }
     </script>
 }

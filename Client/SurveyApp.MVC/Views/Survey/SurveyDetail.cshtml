@@ -38,10 +38,10 @@
                 else if (Model.Questions[i].QuestionType.Id == 3)
                 {
                     <div class="btn-group" role="group">
-                        @for (int j = 0; j < 10; j++)
+                        @foreach (var option in Model.Questions[i].Options)
                         {
-                            <input type="radio" class="btn-check" name=@($"option{Model.Questions[i].Id}") value=@j id=@($"option{i + 1}-${j + 99999}") autocomplete="off" />
-                            <label class="btn btn-outline-success" for=@($"option{i + 1}-${j + 99999}")>@j</label>
+                            <input type="radio" class="btn-check" name=@($"option{Model.Questions[i].Id}") value=@option.Id id=@($"option{i + 1}-{option.Id}") autocomplete="off" />
+                            <label class="btn btn-outline-success" for=@($"option{i + 1}-{option.Id}")>@option.Text</label>
                         }
                     </div>
                 }
@@ -105,7 +105,9 @@
                         alertify.error('Cevaplarınız kaydedilmedi.\nLütfen cevaplarınızı kontrol ediniz');
                     }
                 })
-
+            answers.surveyId= ''
+            answers.optionalAnswers= []
+            answers.textAnswers= []
 
         }
 
@@ -115,13 +117,11 @@
             console.log("----------")
             switch (questionTypeId) {
                 case '1':
-                    addRadioAnswer(questionTypeId, questionId)
+                case '3':
+                    addRadioOrRangeAnswer(questionTypeId, questionId)
                     break
                 case '2':
                     addCheckAnswer(questionTypeId, questionId)
-                    break
-                case '3':
-                    addRangeAnswer(questionTypeId, questionId)
                     break
                 case '4':
                     addTextAnswer(questionTypeId, questionId)
@@ -132,7 +132,7 @@
             }
         }
 
-        const addRadioAnswer = (questionTypeId, questionId) => {
+        const addRadioOrRangeAnswer = (questionTypeId, questionId) => {
 
             let options = [...document.getElementsByName(`option${questionId}`)]
             let optionId = options.find(p => p.checked)?.value
@@ -153,17 +153,6 @@
                     optionId: checkedAnswer
                 })
             }
-        }
-
-        const addRangeAnswer = (questionTypeId, questionId) => {
-            let options = [...document.getElementsByName(`option${questionId}`)]
-            let answer = options.find(p => p.checked)
-            console.log(`option${questionId}`)
-            answers.textAnswers.push({
-                questionId,
-                questionTypeId,
-                value: answer?.value
-            })
         }
 
         const addTextAnswer = (questionTypeId, questionId) => {

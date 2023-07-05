@@ -7,6 +7,7 @@ using SurveyApp.Application.Extensions.ValidationExtensions;
 using SurveyApp.Application.Interfaces.Repositories;
 using SurveyApp.Application.Interfaces.Services;
 using SurveyApp.Domain.Entities;
+using SurveyApp.Persistence.EntityFramework.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,7 @@ namespace SurveyApp.Persistence.Services
                 question.SurveyId = surveyId;
                 var questionId = await AddAsync(question);
 
-                if (question.QuestionTypeId == 1 || question.QuestionTypeId == 2)
+                if (question.QuestionTypeId == 1 || question.QuestionTypeId == 2 || question.QuestionTypeId == 3)
                 {
                     await _optionService.AddRangeAsync(question.Options, questionId);
                 }
@@ -55,9 +56,23 @@ namespace SurveyApp.Persistence.Services
             return 0;
         }
 
-        public Task DeleteRangeAsync(List<int> removedQuestions)
+        public async Task DeleteAsync(int questionId)
         {
-            throw new NotImplementedException();
+            var question = await _questionRepository.GetAsync(p => p.Id == questionId);
+            if (question is null)
+            {
+                throw new ArgumentNullException(nameof(question));
+            }
+            await _questionRepository.DeleteAsync(question);
+
+        }
+
+        public async Task DeleteRangeAsync(List<int> removedQuestions)
+        {
+            foreach (var question in removedQuestions)
+            {
+                await DeleteAsync(question);
+            }
         }
 
         public async Task<QuestionResponse> GetQuestionByIdAsync(int id)
@@ -76,27 +91,28 @@ namespace SurveyApp.Persistence.Services
         {
             var question = await _questionRepository.GetAsync(p => p.Id == request.Id) ?? throw new ArgumentNullException(nameof(request));
 
-            var updatedQuestion = _mapper.Map<Question>(request);
+            question.QuestionTypeId = request.QuestionTypeId;
+            question.Text = request.Text;
 
-            _validator.ValidateAndThrowArgumentException(updatedQuestion);
+            _validator.ValidateAndThrowArgumentException(question);
 
-            await _questionRepository.UpdateAsync(updatedQuestion);
+            await _questionRepository.UpdateAsync(question);
 
             if (request.QuestionTypeId == 1 || request.QuestionTypeId == 2)
             {
-                var addedOptions = request.Options.Where(p=> p.Id == null).Select(p => p.Text);
-                var removedOptions = question.Options.Where(p => !request.Options.Where(p=>p.Id != null).Select(s => s.Id).Contains(p.Id)).Select(p => p.Id);
-                //var updatedOptions = request.Options.RemoveAll(u=>addedOptions.Contains(u)|| removedOptions.Select(r=>r.Id).Contains(u.Id));
-
-                await _optionService.AddRangeAsync(addedOptions, updatedQuestion.Id);
+                var addedOptions = request.Options.Where(p => p.Id == null).Select(p => p.Text).ToList();
+                var removedOptions = question.Options.Where(p => !request.Options.Where(p => p.Id != null).Select(s => s.Id).Contains(p.Id)).Select(p => p.Id).ToList();
+               
+                await _optionService.AddRangeAsync(addedOptions, question.Id);
                 await _optionService.DeleteRangeAsync(removedOptions);
             }
 
         }
-        public async Task UpdateRangeAsync(List<UpdateQuestionRequest> questions)
+        public async Task UpdateRangeAsync(List<UpdateQuestionRequest> questions, Guid surveyId)
         {
             foreach (var questionRequest in questions)
             {
+                questionRequest.SurveyId = surveyId;
                 await UpdateAsync(questionRequest);
             }
         }

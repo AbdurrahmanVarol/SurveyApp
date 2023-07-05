@@ -12,18 +12,19 @@ namespace SurveyApp.Persistence.EntityFramework.Transaction
 {
     public class EfTransaction : IDatabaseTransaction
     {
-        private IDbContextTransaction _transaction;
+        private readonly SurveyAppContext _appContext;
+
 
         public EfTransaction(SurveyAppContext context)
         {
-            _transaction = context.Database.BeginTransaction();
+            _appContext = context;
         }
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _appContext.Database.BeginTransactionAsync();
+        }
+       
 
-        public async Task Commit() => await _transaction.CommitAsync();
-        
-        public async Task Rollback() => await _transaction.RollbackAsync();
-
-        public async ValueTask DisposeAsync() => await _transaction.DisposeAsync();
        
     }
 }

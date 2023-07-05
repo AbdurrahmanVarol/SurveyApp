@@ -10,7 +10,7 @@ namespace SurveyApp.Application.Interfaces.Repositories
 {
     public interface IEntityRepository<TEntity> where TEntity : BaseEntity
     {
-        Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter);
+        Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> filter);
         Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> filter = null);
         Task AddAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);

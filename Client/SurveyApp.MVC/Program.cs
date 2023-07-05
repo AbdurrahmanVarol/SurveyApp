@@ -36,7 +36,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseMiddleware<NotFoundMiddleware>();
-app.UseMiddleware<ExceptionHandleMiddleware>();
 
 app.UseRouting();
 

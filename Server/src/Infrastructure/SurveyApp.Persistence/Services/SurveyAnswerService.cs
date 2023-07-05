@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace SurveyApp.Persistence.Services
 {
-    public class AnswerService2 : IAnswerService2
+    public class SurveyAnswerService : ISurveyAnswerService
     {
         private readonly IAnswerService _answerService;
         private readonly ITextAnswerService _textAnswerService;
         private readonly IDatabaseTransaction _databaseTransaction;
 
-        public AnswerService2(IAnswerService answerService, ITextAnswerService textAnswerService, IDatabaseTransaction databaseTransaction)
+        public SurveyAnswerService(IAnswerService answerService, ITextAnswerService textAnswerService, IDatabaseTransaction databaseTransaction)
         {
             _answerService = answerService;
             _textAnswerService = textAnswerService;
@@ -24,20 +24,17 @@ namespace SurveyApp.Persistence.Services
 
         public async Task CreateSurveyAnswersAsync(CreateSurveyAnswerRequest request)
         {
+            using var transaction = await _databaseTransaction.BeginTransactionAsync();
             try
             {
                 await _answerService.AddRangeAsync(request.OptionalAnswers);
                 await _textAnswerService.AddRangeAsync(request.TextAnswers);
-                await _databaseTransaction.Commit();
+                await transaction.CommitAsync();
             }
-            catch(Exception ex)
+            catch
             {
-                await _databaseTransaction.Rollback();
-                throw ex;
-            }
-            finally 
-            {
-                await _databaseTransaction.DisposeAsync();
+                await transaction.RollbackAsync();
+                throw;
             }
         }
     }

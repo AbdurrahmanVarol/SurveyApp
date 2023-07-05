@@ -35,6 +35,8 @@ namespace SurveyApp.Persistence.Services
 
         public async Task<Guid> AddAsync(CreateSurveyRequest request)
         {
+            using var transaction = await _transaction.BeginTransactionAsync();
+
             try
             {
                 var survey = _mapper.Map<Survey>(request);
@@ -45,64 +47,61 @@ namespace SurveyApp.Persistence.Services
                 await _surveyRepository.AddAsync(survey);
 
                 await _questionService.AddRangeAsync(request.Questions, survey.Id);
-                await _transaction.Commit();
+                await transaction.CommitAsync();
                 return survey.Id;
             }
-            catch (Exception exception)
+            catch
             {
-                await _transaction.Rollback();
-                throw exception;
-            }
-            finally
-            {
-                await _transaction.DisposeAsync();
+                await transaction.RollbackAsync();
+                throw;
             }
         }
 
         public async Task DeleteAsync(Guid surveyId)
         {
-            var survey = await _surveyRepository.GetAsync(p => p.Id == surveyId);
-            if (survey is null)
-            {
-                throw new ArgumentNullException(nameof(survey));
-            }
-            await _surveyRepository.DeleteAsync(survey);
+                var survey = await _surveyRepository.GetAsync(p => p.Id == surveyId);
+                if (survey is null)
+                {
+                    throw new ArgumentNullException(nameof(survey));
+                }
+                await _surveyRepository.DeleteAsync(survey);
+
+          
         }
 
         public async Task UpdateAsync(UpdateSurveyRequest updateSurveyRequest)
         {
+            using var transaction = await _transaction.BeginTransactionAsync();
             try
             {
                 var survey = await _surveyRepository.GetAsync(p => p.Id == updateSurveyRequest.Id) ?? throw new ArgumentNullException(nameof(updateSurveyRequest));
 
-                var updatedSurvey = _mapper.Map<Survey>(updateSurveyRequest);
+                survey.Title = updateSurveyRequest.Title;                
 
-                _validator.ValidateAndThrowArgumentException(updatedSurvey);
+                _validator.ValidateAndThrowArgumentException(survey);
 
-                await _surveyRepository.UpdateAsync(survey);
+                await _surveyRepository.UpdateAsync(survey);             
 
-                await _questionService.UpdateRangeAsync(updateSurveyRequest.Questions);
 
-                var addedQuestions = updateSurveyRequest.Questions.Where(p => p.Id == null).Select(p => new CreateQuestionRequest
+                var addedQuestions = updateSurveyRequest.Questions.Where(p => p.Id == null || p.Id == default(int)).Select(p => new CreateQuestionRequest
                 {
                     Text = p.Text,
-                    QuestionTypeId = p.QuestionTypeId
-                });
+                    QuestionTypeId = p.QuestionTypeId,
+                    Options = p.Options.Select(p=>p.Text).ToList()
+                }).ToList();
                 var removedQuestions = survey.Questions.Where(p => !updateSurveyRequest.Questions.Where(p => p.Id != null).Select(s => s.Id).Contains(p.Id)).Select(p => p.Id).ToList();
-                var UpdatedQuestions = updateSurveyRequest.Questions.RemoveAll(u => removedQuestions.Contains((int)u.Id));
-                //TODO:
-                await _questionService.AddRangeAsync(addedQuestions, updatedSurvey.Id);
-                //await _questionService.UpdateRangeAsync(UpdatedQuestions);
+                updateSurveyRequest.Questions.RemoveAll(u => removedQuestions.Contains((int)u.Id) || u.Id == default(int) || u.Id == null);
+             
+                await _questionService.AddRangeAsync(addedQuestions, survey.Id);
                 await _questionService.DeleteRangeAsync(removedQuestions);
+                await _questionService.UpdateRangeAsync(updateSurveyRequest.Questions, survey.Id);
+
+                await transaction.CommitAsync();
             }
-            catch (Exception exception)
+            catch
             {
-                await _transaction.Rollback();
-                throw exception;
-            }
-            finally
-            {
-                await _transaction.DisposeAsync();
+                await transaction.RollbackAsync();
+                throw;
             }
         }
 

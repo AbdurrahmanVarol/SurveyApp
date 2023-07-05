@@ -40,10 +40,7 @@ namespace SurveyApp.Persistence.EntityFramework.Repositories
             return await (filter == null ? _context.Set<TEntity>().ToListAsync() : _context.Set<TEntity>().Where(filter).ToListAsync());
         }
 
-        public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter)
-        {
-            return await _context.Set<TEntity>().FirstOrDefaultAsync(filter);
-        }
+        public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> filter) => await _context.Set<TEntity>().FirstOrDefaultAsync(filter);
 
         public async Task UpdateAsync(TEntity entity)
         {
@@ -52,9 +49,6 @@ namespace SurveyApp.Persistence.EntityFramework.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> IsExist(object key)
-        {
-            return (await _context.Set<TEntity>().FindAsync(key)) != null;
-        }
+        public async Task<bool> IsExist(object key) => (await _context.Set<TEntity>().FindAsync(key)) != null;
     }
 }

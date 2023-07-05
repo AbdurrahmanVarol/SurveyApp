@@ -13,16 +13,15 @@ namespace SurveyApp.MVC.Refit
         
         [Get("/surveys/surveyForUpdate/{id}")]
         Task<SurveyDisplayForUpdateModel> GetSurveyForUpdateById(Guid id);
-        
-        //Todo: /surveys?created_by=abdurrahman
-        // surveys/my
+
         [Get("/surveys/GetCreatedSurveys")]
         Task<IEnumerable<SurveyDisplayModel>> GetCreatedSurveysAsync([Authorize("Bearer")] string token);
         
         [Post("/surveys")]
         Task<ApiResponse<int>> CreateSurveyAsync(CreateSurveyModel createSurveyModel, [Authorize("Bearer")] string token);
+
         [Put("/surveys")]
-        Task UpdateSurveyAsync(UpdateSurveyModel updateSurveyModel, [Authorize("Bearer")] string token);
+        Task<IApiResponse> UpdateSurveyAsync(UpdateSurveyModel updateSurveyModel, [Authorize("Bearer")] string token);
         
         [Delete("/surveys")]
         Task DeleteSurveyAsync(Guid surveyId, [Authorize("Bearer")] string token);

@@ -47,9 +47,16 @@
             let title = document.getElementById('title').value
             if (!title) {
                 console.log('title boş')
+                return
             }
 
             data.title = title
+
+            data.questions = data.questions.map(q=>({
+                text:q.text,
+                questionTypeId:q.questionTypeId,
+                options:q.options
+            }))
 
             console.log(data)
             fetch('/survey/CreateSurvey', {
@@ -74,6 +81,9 @@
             document.getElementById('title').value = ''
             document.getElementById('questionType').value = 0
             document.getElementById('options').innerHTML = ''
+            
+            data.title = ""
+            data.questions = []
 
         }
 
@@ -125,7 +135,7 @@
                 case '2':
                     return getOptionsAsCheck(options, questionNumber)
                 case '3':
-                    return getOptionsAsRange(questionNumber)
+                    return getOptionsAsRange(options, questionNumber)
                 case '4':
                     return getOptionsAsText(questionNumber)
                 case '5':
@@ -159,8 +169,8 @@
             return html
         }
 
-        const getOptionsAsRange = (questionNumber) => {
-            let options = [...Array(10).keys()]
+        const getOptionsAsRange = (options,questionNumber) => {
+           
             console.log(options)
             let html = `<div class="btn-group" role="group">`
             for (let option of options) {
@@ -217,9 +227,9 @@
 
             let question = {
                 text: text.value,
-                questionTypeId: questionType.value,
-                options: [...document.querySelectorAll('#options li span')].map(p => p.innerText)
+                questionTypeId: questionType.value
             }
+            question.options = question.questionTypeId == 3 ? [...Array(10).keys()].map(p => p.toString()) : [...document.querySelectorAll('#options li span')].map(p => p.innerText)
             question.tempId = questionTempId.value ? questionTempId.value : Date.now()
 
             remove(questionTempId.value)
@@ -231,7 +241,6 @@
             document.getElementById('options').innerHTML = ''
             text.value = ''
             questionType.value = 0
-            document.getElementById('options').innerHTML = ''
 
             showQuestions()
 

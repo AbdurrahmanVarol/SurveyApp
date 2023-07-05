@@ -56,7 +56,7 @@ namespace SurveyApp.Persistence.Services
         {
             var result = await _answerRepository.GetAnswerResultsBySurveyIdAsync(surveyId);
 
-            if(result?.Survey.CreatedById != userId)
+            if(result != null && result.Survey.CreatedById != userId)
             {
                 throw new ArgumentException($"Ulaşmak istediğiniz anket {result.Survey.CreatedBy.FirstName} {result.Survey.CreatedBy.LastName} kullanıcısına ait değil");
             }

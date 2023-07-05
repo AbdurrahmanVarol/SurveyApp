@@ -5,6 +5,6 @@
         public int Id { get; set; }
         public string Text { get; set; }
         public int QuestionTypeId { get; set; }
-        public IEnumerable<UpdateOptionModel> Options { get; set; }
+        public IEnumerable<UpdateOptionModel> Options { get; set; } = new List<UpdateOptionModel>();
     }
 }

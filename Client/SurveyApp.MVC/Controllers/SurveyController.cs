@@ -12,7 +12,8 @@ using System.Text.Json;
 
 namespace SurveyApp.MVC.Controllers
 {
-    [CustomExceptionFilter]
+   
+    [Authorize]
     public class SurveyController : Controller
     {
         private readonly ISurveyApi _surveyApi;
@@ -27,14 +28,12 @@ namespace SurveyApp.MVC.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public IActionResult CreateSurvey()
         {
             return View();
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> CreateSurvey([FromBody] CreateSurveyModel createSurveyModel)
         {
 
@@ -51,7 +50,6 @@ namespace SurveyApp.MVC.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> UpdateSurvey(Guid surveyId)
         {
             var survey = await _surveyApi.GetSurveyForUpdateById(surveyId);
@@ -65,17 +63,19 @@ namespace SurveyApp.MVC.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+       
         public async Task<IActionResult> UpdateSurvey([FromBody] UpdateSurveyModel createSurveyModel)
         {
-            await _surveyApi.UpdateSurveyAsync(createSurveyModel, Token);
+            var response = await _surveyApi.UpdateSurveyAsync(createSurveyModel, Token);
 
-            TempData["CreateSurvey"] = "Anket Oluşturuldu";
-            return View();
+            TempData["Message"] = "Anket Güncellendi";
+            return Json(new
+            {
+                isSuccess = response.IsSuccessStatusCode
+            });
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> CreatedSurveys()
         {
             var surveys = await _surveyApi.GetCreatedSurveysAsync(Token);
@@ -84,6 +84,7 @@ namespace SurveyApp.MVC.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult SurveyDetail(Guid survey)
         {
 
@@ -97,7 +98,6 @@ namespace SurveyApp.MVC.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> SurveyResult(Guid surveyId)
         {
 
@@ -112,7 +112,6 @@ namespace SurveyApp.MVC.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> DeleteSurvey(Guid surveyId)
         {
 

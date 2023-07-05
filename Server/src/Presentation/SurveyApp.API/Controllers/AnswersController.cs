@@ -12,12 +12,12 @@ namespace SurveyApp.API.Controllers
     public class AnswersController : ControllerBase
     {
         private readonly IAnswerService _answerService;
-        private readonly IAnswerService2 _answerService2;
+        private readonly ISurveyAnswerService _answerService2;
         private readonly ITextAnswerService _textAnswerService;
 
         private Guid UserId => Guid.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
-        public AnswersController(IAnswerService answerService, ITextAnswerService textAnswerService, IAnswerService2 answerService2)
+        public AnswersController(IAnswerService answerService, ITextAnswerService textAnswerService, ISurveyAnswerService answerService2)
         {
             _answerService = answerService;
             _textAnswerService = textAnswerService;
@@ -30,7 +30,7 @@ namespace SurveyApp.API.Controllers
             var result = await _answerService.GetAnswerResultByQuestionIdAsync(questionId);
             return Ok(result);
         }
-        //TODO:FİLTER
+
         [HttpGet("surveyResult/{surveyId}")]
         public async Task<IActionResult> GetSurveyResult(Guid surveyId)
         {

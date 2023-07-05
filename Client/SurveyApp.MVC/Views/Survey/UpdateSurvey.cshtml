@@ -68,10 +68,10 @@
                     else if (Model.Questions[i].QuestionTypeId == 3)
                     {
                         <div class="btn-group" role="group">
-                            @for (int j = 0; j < 10; j++)
+                            @foreach (var option in Model.Questions[i].Options)
                             {
-                                <input type="radio" class="btn-check" name=@($"option{Model.Questions[i].Id}") value=@j id=@($"option{i + 1}-${j + 99999}") autocomplete="off" />
-                                <label class="btn btn-outline-success" for=@($"option{i + 1}-${j + 99999}")>@j</label>
+                                <input type="radio" class="btn-check" name=@($"option{Model.Questions[i].Id}") value=@option.Id id=@($"option{i + 1}-{option.Id}") autocomplete="off" />
+                                <label class="btn btn-outline-success" for=@($"option{i + 1}-{option.Id}")>@option.Text</label>
                             }
                         </div>
                     }
@@ -108,6 +108,13 @@
             }
 
             data.title = title
+            data.questions = data.questions.map(p => {
+                if (p.isTempId) {
+                    p.id = 0
+                    delete p.isTempId
+                }
+                return p
+            })
 
             console.log(data)
             fetch('/survey/UpdateSurvey', {
@@ -117,29 +124,55 @@
                 },
                 body: JSON.stringify(data)
             })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.isSuccess) {
+                        alertify.success('Anket Güncellendi')
+
+                        window.location.href = "/survey/createdsurveys"
+                    }
+                    else {
+                        alertify.error('Anket güncelleme işleminde bir hata oluştu.\n Lütfen tekrar deneyiniz.')
+                    }
+                })
             document.getElementById('questions').innerHTML = ''
             document.getElementById('question').value = ''
             document.getElementById('title').value = ''
             document.getElementById('questionType').value = 0
             document.getElementById('options').innerHTML = ''
-            alertify.success('Anket oluşturuldu')
+
         }
 
         const saveQuestion = () => {
             let questionId = document.getElementById('questionId')
             let text = document.getElementById('question')
             let questionType = document.getElementById('questionType')
-            let options = [...document.querySelectorAll('#options li')].map(p => (
-                {
-                    id: [...p.childNodes].find(p => p.tagName == 'INPUT').value,
-                    text: [...p.childNodes].find(p => p.tagName == 'SPAN').innerText,
-                }
-            ))
+
             let question = {
                 id: Number(questionId.value),
                 text: text.value,
-                questionTypeId: Number(questionType.value),
-                options
+                questionTypeId: Number(questionType.value)
+            }
+            if (!questionId.value) {
+                question.id = Date.now()
+                question.isTempId = true
+                question.options = question.questionTypeId == 3 ? [...Array(10).keys()].map(p => ({ id: 0, text: p.toString() })) : [...document.querySelectorAll('#options li span')].map(p => ({ id: 0, text: p.innerHTML }))
+            }
+            else {
+                let selectedQuestion = data.questions.find(p => p.id == question.id)
+                question.isTempId = selectedQuestion.isTempId
+                if (question.questionTypeId == 1 || question.questionTypeId == 2) {
+                    question.options = [...document.querySelectorAll('#options li')]
+                        .map(p =>
+                        ({
+                            id: [...p.childNodes].find(p => p.tagName == 'INPUT').value,
+                            text: [...p.childNodes].find(p => p.tagName == 'SPAN').innerText,
+                        }))
+                }
+                else {
+                    let selectedQuestion = data.questions.find(p => p.id == question.id)
+                    question.options = selectedQuestion.options
+                }
             }
 
             remove(questionId.value)
@@ -147,6 +180,9 @@
             data.questions.push(question)
 
             questionId.value = ''
+            document.getElementById('options').innerHTML = ''
+            text.value = ''
+            questionType.value = 0
             showQuestions()
         }
 
@@ -167,24 +203,24 @@
 
             let options = getOptionsAsHtml(question.questionTypeId, index, question.options)
             let html = `
-                                         <div class="question row shadow rounded p-3 mb-3" id="question${question.id}" data-questionId='${question.id}' data-questionType=${question.questionTypeId}>
-                                        <div class="d-flex justify-content-between mb-3 ">
-                                            <span>Soru-${index + 1} ) ${question.text}</span>
-                                            <span class="btn-group">
-                                                             <button class="btn btn-outline-danger" onclick="removeQuestion('${question.id}')">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                                        <button class="btn btn-outline-warning" onclick="updateQuestion('${question.id}')">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
+                                                                 <div class="question row shadow rounded p-3 mb-3" id="question${question.id}" data-questionId='${question.id}' data-questionType=${question.questionTypeId}>
+                                                                <div class="d-flex justify-content-between mb-3 ">
+                                                                    <span>Soru-${index + 1} ) ${question.text}</span>
+                                                                    <span class="btn-group">
+                                                                                     <button class="btn btn-outline-danger" onclick="removeQuestion('${question.id}')">
+                                                                            <i class="bi bi-trash"></i>
+                                                                        </button>
+                                                                                <button class="btn btn-outline-warning" onclick="updateQuestion('${question.id}')">
+                                                                            <i class="bi bi-pencil"></i>
+                                                                        </button>
 
-                                            </span>
-                                        </div>
-                                        <div class="option d-flex flex-column">
-                                          ${options}
-                                                            </div>
-                                                        </div>
-                                    `
+                                                                    </span>
+                                                                </div>
+                                                                <div class="option d-flex flex-column">
+                                                                  ${options}
+                                                                                    </div>
+                                                                                </div>
+                                                            `
             return html
         }
 
@@ -208,8 +244,8 @@
 
             for (let index in options) {
                 html += `<input type="radio" class="btn-check" name="option${questionNumber + 1}" id="option${questionNumber + 1}-${Number(index) + 1}" autocomplete="off" />
-                                                         <label class="btn btn-outline-success" for="option${questionNumber + 1}-${Number(index) + 1}">${options[index].text}</label>
-                                                 `
+                                                                                 <label class="btn btn-outline-success" for="option${questionNumber + 1}-${Number(index) + 1}">${options[index].text}</label>
+                                                                         `
             }
             html += `</div>`
             return html
@@ -221,8 +257,8 @@
 
             for (let index in options) {
                 html += `<input type="checkbox" class="btn-check" id="option${questionNumber + 1}-${Number(index) + 1}" autocomplete="off"/>
-                                                         <label class="btn btn-outline-success" for="option${questionNumber + 1}-${Number(index) + 1}">${options[index].text}</label>
-                                                 `
+                                                                                 <label class="btn btn-outline-success" for="option${questionNumber + 1}-${Number(index) + 1}">${options[index].text}</label>
+                                                                         `
             }
             html += `</div>`
             return html
@@ -233,9 +269,9 @@
             let html = `<div class="btn-group" role="group">`
             for (let option of options) {
                 html += `
-                                                 <input type="radio" class="btn-check" name="option${questionNumber + 1}" id="option${questionNumber + 1}-${option}" autocomplete="off" />
-                                                 <label class="btn btn-outline-success" for="option${questionNumber + 1}-${option}">${option}</label>
-                                                        `
+                                                                         <input type="radio" class="btn-check" name="option${questionNumber + 1}" id="option${questionNumber + 1}-${option}" autocomplete="off" />
+                                                                         <label class="btn btn-outline-success" for="option${questionNumber + 1}-${option}">${option}</label>
+                                                                                `
             }
             html += `</div>`
             return html
@@ -243,14 +279,14 @@
 
         const getOptionsAsText = (questionNumber) => {
             return `<div class="mb-3">
-                                                <input class="form-control" name="option${questionNumber + 1}" id="option${questionNumber + 1}"/>
-                                            </div>`
+                                                                        <input class="form-control" name="option${questionNumber + 1}" id="option${questionNumber + 1}"/>
+                                                                    </div>`
         }
 
         const getOptionsAsTextArea = (questionNumber) => {
             return `<div class="mb-3">
-                                                <textarea class="form-control" name="option${questionNumber + 1}" id="option${questionNumber + 1}"></textarea>
-                                            </div>`
+                                                                        <textarea class="form-control" name="option${questionNumber + 1}" id="option${questionNumber + 1}"></textarea>
+                                                                    </div>`
         }
 
         const remove = questionId => {
@@ -284,11 +320,13 @@
 
             options.innerHTML = ''
 
-            let html = ``
-            for (let item of selectedQuestion.options) {
-                html += getListItemAsString(item.text, item.id)
+            if (selectedQuestion.questionTypeId == 1 || selectedQuestion.questionTypeId == 2) {
+                let html = ``
+                for (let item of selectedQuestion.options) {
+                    html += getListItemAsString(item.text, item.id)
+                }
+                options.innerHTML = html
             }
-            options.innerHTML = html
 
             let questionTypes = [...document.querySelectorAll('#questionType option')]
             for (let questionType of questionTypes) {
@@ -299,12 +337,12 @@
 
         const getListItemAsString = (text, id) => {
             return `
-                                            <li class="fs-5 d-flex align-items-center mb-2">
-                                                <button class="btn badge bg-danger text-light float-start me-2" onclick="removeOption(event)">&#x2715</button>
-                                                <input type='hidden' value='${id}' />
-                                                <span>${text}</span>
-                                            </li>
-                                            `
+                                                                    <li class="fs-5 d-flex align-items-center mb-2">
+                                                                        <button class="btn badge bg-danger text-light float-start me-2" onclick="removeOption(event)">&#x2715</button>
+                                                                        <input type='hidden' value='${id}' />
+                                                                        <span>${text}</span>
+                                                                    </li>
+                                                                    `
         }
 
         const addOption = () => {
