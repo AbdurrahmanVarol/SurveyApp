@@ -86,8 +86,8 @@ namespace SurveyApp.MVC.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> SurveyDetail(Guid survey)
         {
-
             var survetDetail = await _surveyApi.GetSurveyById(survey);
+
             if (survetDetail is null)
             {
                 return RedirectToAction("notfound", "home");
