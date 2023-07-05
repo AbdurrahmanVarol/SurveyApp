@@ -52,7 +52,7 @@ namespace SurveyApp.Persistence.EntityFramework.Repositories
                           Questions = new List<Question>(),
                           Id = survey.Id
                       },
-                      //TODO:Enum
+                      //TODO:Enum?
                       Questions = _surveyAppContext.Questions.Where(p => p.SurveyId == surveyId && (p.QuestionTypeId == 1 || p.QuestionTypeId == 2 || p.QuestionTypeId == 3)).Select(p => new QuestionResult
                       {
                           Question = new Question

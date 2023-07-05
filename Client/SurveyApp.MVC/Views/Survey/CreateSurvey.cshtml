@@ -276,11 +276,14 @@
 
             options.innerHTML = ''
 
-            let html = ``
-            for (let option of selectedQuestion.options) {
-                html += getListItemAsString(option)
+            if (selectedQuestion.questionTypeId == 1 || selectedQuestion.questionTypeId == 2) {
+
+                let html = ``
+                for (let option of selectedQuestion.options) {
+                    html += getListItemAsString(option)
+                }
+                options.innerHTML = html
             }
-            options.innerHTML = html
 
             let questionTypes = [...document.querySelectorAll('#questionType option')]
             for (let questionType of questionTypes) {
