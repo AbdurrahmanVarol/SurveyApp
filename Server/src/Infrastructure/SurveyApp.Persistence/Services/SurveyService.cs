@@ -89,7 +89,7 @@ namespace SurveyApp.Persistence.Services
                     QuestionTypeId = p.QuestionTypeId,
                     Options = p.Options.Select(p=>p.Text).ToList()
                 }).ToList();
-                var removedQuestions = survey.Questions.Where(p => !updateSurveyRequest.Questions.Where(p => p.Id != null).Select(s => s.Id).Contains(p.Id)).Select(p => p.Id).ToList();
+                var removedQuestions = survey.Questions.Where(p => !updateSurveyRequest.Questions.Where(p => p.Id != null || p.Id != default(int)).Select(s => s.Id).Contains(p.Id)).Select(p => p.Id).ToList();
                 updateSurveyRequest.Questions.RemoveAll(u => removedQuestions.Contains((int)u.Id) || u.Id == default(int) || u.Id == null);
              
                 await _questionService.AddRangeAsync(addedQuestions, survey.Id);

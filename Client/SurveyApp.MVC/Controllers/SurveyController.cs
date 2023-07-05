@@ -62,8 +62,7 @@ namespace SurveyApp.MVC.Controllers
             return View(survey);
         }
 
-        [HttpPost]
-       
+        [HttpPost]       
         public async Task<IActionResult> UpdateSurvey([FromBody] UpdateSurveyModel createSurveyModel)
         {
             var response = await _surveyApi.UpdateSurveyAsync(createSurveyModel, Token);
@@ -85,10 +84,10 @@ namespace SurveyApp.MVC.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult SurveyDetail(Guid survey)
+        public async Task<IActionResult> SurveyDetail(Guid survey)
         {
 
-            var survetDetail = _surveyApi.GetSurveyById(survey).GetAwaiter().GetResult();
+            var survetDetail = await _surveyApi.GetSurveyById(survey);
             if (survetDetail is null)
             {
                 return RedirectToAction("notfound", "home");

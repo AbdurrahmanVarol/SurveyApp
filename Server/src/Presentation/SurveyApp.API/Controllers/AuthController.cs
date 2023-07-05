@@ -11,7 +11,7 @@ namespace SurveyApp.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private IAuthService _authService;
+        private readonly IAuthService _authService;
 
         private Guid UserId => Guid.Parse(User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).First().Value);    
 

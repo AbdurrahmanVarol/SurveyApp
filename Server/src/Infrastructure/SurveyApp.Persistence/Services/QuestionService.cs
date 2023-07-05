@@ -41,7 +41,7 @@ namespace SurveyApp.Persistence.Services
             return question.Id;
         }
 
-        public async Task<int> AddRangeAsync(IEnumerable<CreateQuestionRequest> request, Guid surveyId)
+        public async Task AddRangeAsync(IEnumerable<CreateQuestionRequest> request, Guid surveyId)
         {
             foreach (var question in request)
             {
@@ -53,7 +53,6 @@ namespace SurveyApp.Persistence.Services
                     await _optionService.AddRangeAsync(question.Options, questionId);
                 }
             }
-            return 0;
         }
 
         public async Task DeleteAsync(int questionId)

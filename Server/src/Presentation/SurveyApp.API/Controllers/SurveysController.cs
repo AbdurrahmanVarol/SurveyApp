@@ -9,6 +9,7 @@ namespace SurveyApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SurveysController : ControllerBase
     {
         private readonly ISurveyService _surveyService;
@@ -20,6 +21,7 @@ namespace SurveyApp.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             var survey = await _surveyService.GetSurveysAsync();
@@ -30,6 +32,7 @@ namespace SurveyApp.API.Controllers
             return Ok(survey);
         }
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Get(Guid id)
         {
             var survey = await _surveyService.GetSurveyByIdAsync(id);
@@ -41,6 +44,7 @@ namespace SurveyApp.API.Controllers
         }
         
         [HttpGet("surveyForUpdate/{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetSurveyForupdate(Guid id)
         {
             var survey = await _surveyService.GetSurveyForUpdateByIdAsync(id);
@@ -51,8 +55,7 @@ namespace SurveyApp.API.Controllers
             return Ok(survey);
         }
 
-        [HttpGet("GetCreatedSurveys")]
-        [Authorize]
+        [HttpGet("GetCreatedSurveys")]        
         public async Task<IActionResult> GetCreatedSurveys()
         {
             var survey = await _surveyService.GetSurveysByUserIdAsync(UserId);
@@ -64,7 +67,6 @@ namespace SurveyApp.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Post([FromBody] CreateSurveyRequest request)
             {
             request.CreatedById = UserId;
@@ -73,7 +75,6 @@ namespace SurveyApp.API.Controllers
         }
 
         [HttpPut]
-        [Authorize]
         public async Task<IActionResult> Put([FromBody] UpdateSurveyRequest request)
         {
             request.CreatedById = UserId;
@@ -82,7 +83,6 @@ namespace SurveyApp.API.Controllers
         }
 
         [HttpDelete]
-        [Authorize]
         public async Task<IActionResult> Delete(Guid surveyId)
         {            
             await _surveyService.DeleteAsync(surveyId);

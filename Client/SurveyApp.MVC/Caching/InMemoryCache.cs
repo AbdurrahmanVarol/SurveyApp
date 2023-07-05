@@ -15,11 +15,9 @@ namespace SurveyApp.MVC.Caching
 
         public T? Get<T>(string key) where T : class
         {
-           
-
-            if (_cache.TryGetValue(key, out object value))
+            if (_cache.TryGetValue(key, out object? value))
             {
-                return (T)value;
+                return (T?)value;
             }
             return null;
         }
