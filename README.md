@@ -44,6 +44,33 @@
   1. Css: Bootstrap
   1. Toast message: AlertifyJs
 
+#### Anasayfa
+![Anasayfa](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/a941abb4-3142-45a7-83dd-3655b7840c27)
+
+#### Anket Oluşturma Sayfası
+![AnketOluşturma](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/beece33a-e445-4e41-8dfc-4b438e66bd3e)
+
+#### Oluşturduğun Anketler Sayfası
+![oluşturduğunAnketler](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/43d65930-17fc-438d-a978-5cd177a71400)
+
+#### Anket Paylaşma
+![Anket paylaşma](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/10f7f5c0-f07f-4d75-a19e-1f31415f9fa9)
+
+#### Anket Güncelleme Sayfası
+![Anket Güncelleme](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/cf38fa15-38ce-4c04-90d6-165364179a78)
+
+#### Anket Silme 
+![Anket silme 1](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/703ef967-a6b3-4bf8-9858-13ac1a9fe278)
+
+![anket silme 2](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/1b88ee95-2fde-4a76-be7b-5b228a0a38e6)
+
+#### Anket Sonuçları Sayfası
+![anket sonucları](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/0665d641-dd73-4857-a202-441d56b6d4b1)
+![anket sonucları2](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/51a976d2-f895-4d0c-84ee-a658bec74a79)
+
+#### Anket Doldurma Sayfası
+![Anket Detayları sayfası](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/8752e5fa-8a40-4f78-9d06-bea893796e03)
+
 
     
 
