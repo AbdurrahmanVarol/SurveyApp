@@ -54,9 +54,13 @@
 ![oluşturduğunAnketler](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/43d65930-17fc-438d-a978-5cd177a71400)
 
 #### Anket Paylaşma
+![Anket paylaşma 1](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/ed346611-aab2-47b9-8fce-0ecb9b8903a4)
+
 ![Anket paylaşma](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/10f7f5c0-f07f-4d75-a19e-1f31415f9fa9)
 
 #### Anket Güncelleme Sayfası
+![anket güncelle 1](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/3c6a8152-20d6-4fff-ac5f-7097aedf0b8f)
+
 ![Anket Güncelleme](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/cf38fa15-38ce-4c04-90d6-165364179a78)
 
 #### Anket Silme 
