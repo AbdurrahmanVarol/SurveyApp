@@ -26,7 +26,7 @@ namespace SurveyApp.Persistence.EntityFramework.Repositories
                     from answer in _surveyAppContext.Answers
                     join option in _surveyAppContext.Options on answer.OptionId equals option.Id
                     where option.QuestionId == questionId
-                    group new { answer, option } by new { option.Id, option.QuestionId } into g
+                    group new { answer, option } by new { option.Id } into g
                     select new AnswerResult
                     {
                         AnswerCount = g.Count(),
@@ -62,16 +62,16 @@ namespace SurveyApp.Persistence.EntityFramework.Repositories
                               Text = p.Text,
                               QuestionType = null,
                               Id = p.Id,
-                              Options = null,
+                              Options = new List<Option>(),
                               Survey = null,
-                              TextAnswers = null,
+                              TextAnswers = new List<TextAnswer>(),
 
                           },
                           Answers = (
                                      from answer in _surveyAppContext.Answers
                                      join option in _surveyAppContext.Options on answer.OptionId equals option.Id
                                      where option.QuestionId == p.Id
-                                     group new { answer, option } by new { option.Id, option.QuestionId } into g
+                                     group new { answer, option } by new { option.Id } into g
                                      select new AnswerResult
                                      {
                                          AnswerCount = g.Count(),

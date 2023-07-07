@@ -19,11 +19,6 @@ namespace SurveyApp.Application
             services.AddAutoMapper(assembly);
 
             services.AddValidatorsFromAssembly(assembly);
-            //services.AddScoped<IValidator<User>,UserValidator>();
-            //services.AddScoped<IValidator<Survey>,SurveyValidator>();
-            //services.AddScoped<IValidator<Question>,QuestionValidator>();
-            //services.AddScoped<IValidator<Option>,OptionValidator>();
-            //services.AddScoped<IValidator<Answer>,AnswerValidator>();
         }
     }
 }

@@ -116,8 +116,6 @@ namespace SurveyApp.MVC.Controllers
 
             await _surveyApi.DeleteSurveyAsync(surveyId, Token);
 
-            var surveys = await _surveyApi.GetCreatedSurveysAsync(Token);
-
             TempData["Message"] = "Anket Silindi";
 
             return RedirectToAction(nameof(CreatedSurveys));

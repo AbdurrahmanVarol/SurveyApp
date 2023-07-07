@@ -79,7 +79,7 @@ namespace SurveyApp.MVC.Controllers
         {
             var response = await _authApi.RegisterAsync(registerRequest);
 
-            if(response.IsSuccessStatusCode)
+            if(!response.IsSuccessStatusCode)
             {
                 TempData["Register"] = "Kayıt olunamadı";
             }

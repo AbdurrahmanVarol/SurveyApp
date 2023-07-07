@@ -101,8 +101,6 @@
         }
 
         const getQuestionAsString = (index, question) => {
-            let questions = [...document.querySelectorAll('#questions .row')]
-
             let options = getOptionsAsHtml(question.questionTypeId, index, question.options)
             console.log(options)
             let html = `

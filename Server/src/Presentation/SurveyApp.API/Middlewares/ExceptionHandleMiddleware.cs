@@ -25,22 +25,26 @@ namespace SurveyApp.API.Middlewares
             {
                 var statusCode = exception switch
                 {
-                    ValidationException 
+                    ValidationException
                     or ArgumentException
-                    => (int)HttpStatusCode.BadRequest,                    
+                    or ArgumentNullException
+                    => (int)HttpStatusCode.BadRequest,
                     _ => (int)HttpStatusCode.InternalServerError,
                 };
                 context.Response.StatusCode = statusCode;
                 context.Response.ContentType = "application/json";
 
-                if(statusCode == (int)HttpStatusCode.InternalServerError)
+                string message;
+
+                if (statusCode == (int)HttpStatusCode.InternalServerError)
                 {
-                  await  context.Response.WriteAsync(JsonSerializer.Serialize(new { error = "Server Error" }));
+                    message = JsonSerializer.Serialize(new { error = "Server Error" });
                 }
                 else
                 {
-                   await context.Response.WriteAsync(JsonSerializer.Serialize(new { error = exception.Message }));
+                    message = JsonSerializer.Serialize(new { error = exception.Message });
                 }
+                await context.Response.WriteAsync(message);
             }
         }
     }

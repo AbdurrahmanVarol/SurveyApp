@@ -23,8 +23,5 @@ namespace SurveyApp.Persistence.EntityFramework.Transaction
         {
             return await _appContext.Database.BeginTransactionAsync();
         }
-       
-
-       
     }
 }
