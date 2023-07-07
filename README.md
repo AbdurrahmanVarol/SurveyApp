@@ -33,8 +33,9 @@ dotnet run --project .\SurveyApp\Client\SurveyApp.MVC\SurveyApp.MVC.csproj
 ### Server:
 - Backent projesinde mimari olarak Onion Architecture kullanılmıştır.
 - Bu mimari katmanlar içeriden dışarıya halka şeklinde gösterildiği için bu adı almıştır.
+  
+![onionDiagram](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/00e7a1c4-de2a-42d5-b1d3-bd8d7d6406ef)
 
-![onionDiagram](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/90ec6f4a-0990-4b16-8848-931da5b22daa)
 
 #### Backend projesinde kullanılan paketler:
 1. ORM: EntityFramework Core
@@ -43,7 +44,7 @@ dotnet run --project .\SurveyApp\Client\SurveyApp.MVC\SurveyApp.MVC.csproj
 
 #### Veritabanı diagramı:
 
-![DbDiagram](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/e6107473-5a8e-4aa5-bc25-1d394bc8299e)
+![DbDiagram](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/ab67c520-fdef-49d3-98f7-2060a10382d0)
 
 ## Client:
   #### Kullanılan paketler:
@@ -52,36 +53,37 @@ dotnet run --project .\SurveyApp\Client\SurveyApp.MVC\SurveyApp.MVC.csproj
   1. Toast message: AlertifyJs
 
 #### Anasayfa
-![Anasayfa](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/a941abb4-3142-45a7-83dd-3655b7840c27)
+![Anasayfa](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/593a9607-07e7-4c4d-808c-c4c240eaa344)
 
 #### Anket Oluşturma Sayfası
-![AnketOluşturma](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/beece33a-e445-4e41-8dfc-4b438e66bd3e)
+![AnketOluşturma](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/30a9d9d0-5199-416a-8401-52a88ba4cf4b)
 
 #### Oluşturduğun Anketler Sayfası
-![oluşturduğunAnketler](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/43d65930-17fc-438d-a978-5cd177a71400)
+![oluşturduğunAnketler](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/e77a3511-bcff-444d-a3b4-79ef3c0bb301)
 
 #### Anket Paylaşma
-![Anket paylaşma 1](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/ed346611-aab2-47b9-8fce-0ecb9b8903a4)
+![Anket paylaşma 1](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/909b6362-dccf-4532-b73a-fabe6e719227)
 
-![Anket paylaşma](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/10f7f5c0-f07f-4d75-a19e-1f31415f9fa9)
+![Anket paylaşma](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/7a0f5d3b-8171-4197-bb07-110b5e9daefb)
 
 #### Anket Güncelleme Sayfası
-![anket güncelle 1](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/3c6a8152-20d6-4fff-ac5f-7097aedf0b8f)
+![anket güncelle 1](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/15f292cf-2f7d-4eb1-be79-5358147b76d9)
 
-![Anket Güncelleme](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/cf38fa15-38ce-4c04-90d6-165364179a78)
+![Anket Güncelleme](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/07c8f94d-f660-44b7-922b-a7b4987cbe61)
 
 #### Anket Silme 
-![Anket silme 1](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/703ef967-a6b3-4bf8-9858-13ac1a9fe278)
+![Anket silme 1](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/9a3e569d-eab2-43f1-914e-53721f1a996b)
 
-![anket silme 2](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/1b88ee95-2fde-4a76-be7b-5b228a0a38e6)
+![anket silme 2](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/6f6ac888-ca39-4ee6-8001-c3ce753de1ae)
 
 #### Anket Sonuçları Sayfası
-![anket sonucları](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/0665d641-dd73-4857-a202-441d56b6d4b1)
-![anket sonucları2](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/51a976d2-f895-4d0c-84ee-a658bec74a79)
+![anket sonucları](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/667e43bb-f1e0-4c94-a193-4d1af4c9ed98)
+
+![anket sonucları2](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/68189f48-6023-401b-9489-7169a9698ccb)
 
 #### Anket Doldurma Sayfası
-![Anket Detayları sayfası](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/8752e5fa-8a40-4f78-9d06-bea893796e03)
 
+![Anket Detayları sayfası](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/14387d8d-f401-487b-9416-9967321c516e)
 
     
 
