@@ -15,7 +15,7 @@ dotnet run --project .\SurveyApp\Server\src\Presentation\SurveyApp.API\SurveyApp
 dotnet run --project .\SurveyApp\Client\SurveyApp.MVC\SurveyApp.MVC.csproj
 ```
 
-3. Solution ayarları:
+2. Solution ayarları:
   - İki ayrı proje çalıştığı için Solution Properties > Common Properties > Startup Project kısmından Multiple startup projects' i işaretledikten sonra SurveyApp.API birinci sıraya, SurveyApp.MVC projesini ikinci sıraya getirdikten sonra Action kısmından bu iki proje için start konumuna getirin.
     
 ![Ekran görüntüsü 2023-07-07 160615](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/fca6d682-648c-4819-87b7-6c240ae10a8c)
