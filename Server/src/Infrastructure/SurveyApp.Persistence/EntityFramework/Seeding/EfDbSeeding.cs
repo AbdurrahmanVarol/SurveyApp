@@ -177,12 +177,11 @@ namespace SurveyApp.Persistence.EntityFramework.Seeding
                         Text = "Python",
                     }
                 };
-                options.AddRange( Enumerable.Range(0, 10).Select(x => new Option
+                options.AddRange(Enumerable.Range(0, 10).Select(x => new Option
                 {
                     QuestionId = 5,
                     Text = $"{x}"
                 }));
-
                 context.Options.AddRange(options);
                 context.SaveChanges();
             }
