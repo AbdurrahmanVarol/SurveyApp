@@ -1,13 +1,17 @@
 # SurveyApp
 
 ## Kurulum
-  1. #### Connection stringin ayarlanması:
+  1. Connection stringin ayarlanması:
   - Vertabanı connection stringi Server\Resentation klasörü altındaki Web Api projetinde bulunan appsettings.json dostasında tutulmaktadır.
-  1. #### JWT Secret Key'in ayarlanması:
+  2. Secret Key'in ayarlanması:
   - JWT Secret Key'i Server\Resentation klasörü altındaki Web Api projetinde bulunan appsettings.json dostasında tutulmaktadır.
-  1. #### Refit Baseadress'in ayarlanması:
+  3. Refit Baseadress'in ayarlanması:
   - Refit bir api'a istek atabilmesi için o api'nin çalıştığı adresi bilmesi gerekir.
   - Bu adres Client klasörü altındaki MVC projesinin appsettings.json dosyasında tutulmaktadır.
+  4. Solution ayarları:
+  - İki ayrı proje çalıştığı için Solution Properties > Common Properties > Startup Project kısmından Multiple startup projects' i işaretledikten sonra SurveyApp.API birinci sıraya, SurveyApp.MVC projesini ikinci sıraya getirdikten sonra Action kısmından bu iki proje için start konumuna getirin.
+    
+![Ekran görüntüsü 2023-07-07 160615](https://github.com/AbdurrahmanVarol/SurveyApp/assets/96303254/fca6d682-648c-4819-87b7-6c240ae10a8c)
 
 
 ### Proje gereksinimleri: 
