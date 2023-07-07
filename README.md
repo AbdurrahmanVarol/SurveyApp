@@ -3,9 +3,9 @@
 ## Kurulum
   1. #### Connection stringin ayarlanması:
   - Vertabanı connection stringi Server\Resentation klasörü altındaki Web Api projetinde bulunan appsettings.json dostasında tutulmaktadır.
-  1. #### JWT Secret Key'in ayarlanması:
+  2. #### JWT Secret Key'in ayarlanması:
   - JWT Secret Key'i Server\Resentation klasörü altındaki Web Api projetinde bulunan appsettings.json dostasında tutulmaktadır.
-  1. #### Refit Baseadress'in ayarlanması:
+  3. #### Refit Baseadress'in ayarlanması:
   - Refit bir api'a istek atabilmesi için o api'nin çalıştığı adresi bilmesi gerekir.
   - Bu adres Client klasörü altındaki MVC projesinin appsettings.json dosyasında tutulmaktadır.
 
