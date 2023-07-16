@@ -30,7 +30,7 @@ namespace SurveyApp.Persistence.Services
         {
             var answer = _mapper.Map<TextAnswer>(request);
 
-            _validator.ValidateAndThrowArgumentException(answer);
+            _validator.ValidateAndThrowValidationException(answer);
 
             await _textAnswerRepository.AddAsync(answer);
             return answer.Id;

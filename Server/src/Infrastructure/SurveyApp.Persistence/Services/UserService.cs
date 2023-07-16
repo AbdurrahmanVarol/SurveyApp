@@ -24,7 +24,7 @@ namespace SurveyApp.Persistence.Services
 
         public async Task AddAsync(User user)
         {
-            _validator.ValidateAndThrowArgumentException(user);
+            _validator.ValidateAndThrowValidationException(user);
 
             await _userRepository.AddAsync(user);           
         }

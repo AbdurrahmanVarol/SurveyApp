@@ -31,7 +31,7 @@ namespace SurveyApp.Persistence.Services
         {
             var option = _mapper.Map<Option>(request);
 
-            _validator.ValidateAndThrowArgumentException(option);
+            _validator.ValidateAndThrowValidationException(option);
 
             await _optionRepository.AddAsync(option);
             return option.Id;

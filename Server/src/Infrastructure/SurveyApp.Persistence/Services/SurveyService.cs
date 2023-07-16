@@ -42,7 +42,7 @@ namespace SurveyApp.Persistence.Services
                 var survey = _mapper.Map<Survey>(request);
 
                 survey.CreatedAt = DateTime.Now;
-                _validator.ValidateAndThrowArgumentException(survey);
+                _validator.ValidateAndThrowValidationException(survey);
 
                 await _surveyRepository.AddAsync(survey);
 
@@ -78,7 +78,7 @@ namespace SurveyApp.Persistence.Services
 
                 survey.Title = updateSurveyRequest.Title;
 
-                _validator.ValidateAndThrowArgumentException(survey);
+                _validator.ValidateAndThrowValidationException(survey);
 
                 await _surveyRepository.UpdateAsync(survey);
 

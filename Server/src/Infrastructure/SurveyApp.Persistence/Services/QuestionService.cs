@@ -35,7 +35,7 @@ namespace SurveyApp.Persistence.Services
         {
             var question = _mapper.Map<Question>(request);
 
-            _validator.ValidateAndThrowArgumentException(question);
+            _validator.ValidateAndThrowValidationException(question);
 
             await _questionRepository.AddAsync(question);
             return question.Id;
@@ -93,7 +93,7 @@ namespace SurveyApp.Persistence.Services
             question.QuestionTypeId = request.QuestionTypeId;
             question.Text = request.Text;
 
-            _validator.ValidateAndThrowArgumentException(question);
+            _validator.ValidateAndThrowValidationException(question);
 
             await _questionRepository.UpdateAsync(question);
 
